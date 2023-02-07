@@ -1,0 +1,388 @@
+/** @format */
+
+:root {
+    --bor-cor: rgb(239, 248, 255);
+    --but-cor: rgb(27, 155, 253);
+    --but-hover-cor: rgb(0, 145, 255);
+    --bg-but-hover-cor: rgb(128, 199, 253);
+    --bg-aside-cor: rgb(228, 251, 197);
+    --bg-aside-on-cor: rgb(78, 250, 87);
+    --bg-index-cor: rgb(248, 248, 248);
+    --bg-table-th-cor: rgb(207, 246, 251);
+    --bg-table-td-cor: rgb(221, 243, 246);
+    --bg-test-cor: rgb(236 255 236);
+    --bg-test-err-cor: rgb(255, 210, 210);
+    --bg-test-pro-cor: rgb(203, 246, 255);
+    --bg-test-err-pro-cor: rgb(251, 203, 255);
+    --te-test-err-cor: rgb(247, 56, 56);
+    --te-test-pro-cor: rgb(106, 131, 255);
+    --bg-test-body: rgb(255, 255, 255);
+    --bg-code-highlig: rgb(255, 251, 223);
+    --bg-box-cor: rgb(198, 198, 198);
+    --bg-md-cor: rgb(255, 233, 243);
+    --bg-use-cor: rgb(193, 219, 255);
+    --bg-use-component-cor: rgb(246, 246, 246);
+    --text-cor: rgb(0, 0, 0);
+    --fs-1: 12px;
+    --fs-2: 14px;
+    --fs-3: 16px;
+    --fs-4: 18px;
+    --fs-5: 20px;
+}
+@mixin but {
+    cursor: pointer;
+    &:hover {
+        color: var(--but-hover-cor);
+        background-color: var(--bg-but-hover-cor);
+    }
+}
+@mixin roll {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+}
+@mixin full {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+@mixin flex-r {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+@mixin flex-c {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.__document {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    text-align: left;
+    @include full;
+    .but-div {
+        @include but;
+        color: var(--but-cor);
+        padding: 5px 10px;
+    }
+    .aside {
+        padding: 20px 0;
+        .aside-li {
+            padding: 5px 10px;
+            height: 60px;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--bor-cor);
+            @include but;
+            @include flex-r;
+            &.on {
+                background-color: var(--bg-aside-on-cor);
+            }
+            .aside-li-name {
+                width: 100%;
+                .aside-li-name-alias {
+                    font-size: var(--fs-2);
+                }
+                .aside-li-name-aliass {
+                    font-size: var(--fs-1);
+                }
+            }
+        }
+    }
+    .md {
+        position: relative;
+        .md-top-name {
+        }
+    }
+    .use {
+        .use-props {
+        }
+        .use-component {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            background-color: var(--bg-use-component-cor);
+        }
+        .use-emit {
+        }
+    }
+    .set-code {
+        .set-code-buts {
+            display: flex;
+            align-items: center;
+            .set-code-but {
+            }
+        }
+    }
+    .form-item {
+        &.error {
+            background-color: var(--te-test-err-cor);
+        }
+    }
+    .compo {
+        .compo-top {
+            .compo-top-name {
+                padding: 10px;
+                font-size: var(--fs-4);
+                .compo-top-name-li {
+                    font-size: var(--fs-2);
+                }
+            }
+            .compo-top-info {
+                padding: 10px;
+                @include flex-r;
+                .compo-top-athor {
+                    flex: 1;
+                    @include flex-r;
+                }
+                .compo-top-date {
+                    flex: 1;
+                    @include flex-r;
+                }
+            }
+            .compo-top-descriptions {
+                padding: 0 10px;
+                font-size: var(--fs-2);
+            }
+        }
+        .compo-li {
+            h4 {
+                margin: 0;
+                margin-top: 10px;
+                padding: 10px;
+            }
+            .compo-talbe {
+                width: 100%;
+                .compo-talbe-body {
+                    border: 1px solid var(--bor-cor);
+                    width: 100%;
+                    td,
+                    th {
+                        padding: 5px 10px;
+                        border-bottom: 1px solid
+                            var(--bor-cor);
+                    }
+                    th {
+                        background-color: var(
+                            --bg-table-th-cor
+                        );
+                    }
+                    td {
+                        background-color: var(
+                            --bg-table-td-cor
+                        );
+                    }
+                    tr {
+                        &:last-child td {
+                            border-bottom: 0;
+                        }
+                    }
+
+                    .compo-talbe-zw {
+                        width: 100%;
+                        text-align: center;
+                        padding: 10px;
+                    }
+                }
+            }
+        }
+        .compo-md {
+            padding: 10px;
+            background-color: var(--bg-md-cor);
+        }
+        .compo-use {
+            padding: 10px;
+            background-color: var(--bg-use-cor);
+        }
+    }
+    .main {
+        .main-but {
+            text-align: right;
+            @include flex-r;
+        }
+        .main-test {
+        }
+    }
+    .test {
+        &.error {
+            .test-top {
+                background-color: var(--bg-test-err-cor);
+            }
+        }
+        &.proposal {
+            .test-top {
+                background-color: var(--bg-test-pro-cor);
+            }
+        }
+        &.error-proposal {
+            .test-top {
+                background-color: var(
+                    --bg-test-err-pro-cor
+                );
+            }
+        }
+        .test-top {
+            padding: 5px;
+            background-color: var(--bg-test-cor);
+            .test-top-description {
+            }
+            .test-top-error {
+                color: var(--te-test-err-cor);
+            }
+            .test-top-proposal {
+                color: var(--te-test-pro-cor);
+            }
+        }
+        .test-div {
+            .test-body {
+                padding: 5px;
+                background-color: var(--bg-test-body);
+            }
+            .test-code {
+            }
+        }
+    }
+    .code {
+        padding: 0;
+        .code-top {
+            .code-top-but {
+                @include flex-r;
+                .top-but-files {
+                    @include flex-r;
+                }
+            }
+        }
+        .code-highlightjs {
+            padding: 0;
+            .hljs {
+                background-color: var(--bg-code-highlig);
+            }
+        }
+    }
+    .box-url {
+        position: relative;
+        &:hover {
+            .box-url-box {
+                display: block;
+            }
+        }
+        .box-url-box {
+            position: fixed;
+            top: 25px;
+            display: none;
+            background-color: var(--bg-box-cor);
+            font-size: var(--fs-1);
+            color: var(--text-cor);
+            z-index: 100000;
+            .box-div-li {
+                height: 20px;
+                line-height: 20px;
+                @include flex-r;
+                .box-div-li-span {
+                    white-space: nowrap;
+                    padding: 5px 10px;
+                }
+            }
+        }
+    }
+    .__document-index {
+        @include full;
+        display: flex;
+        flex-direction: row;
+        .index-aside {
+            width: 250px;
+            position: relative;
+            z-index: 100;
+            .index-aside-div {
+                height: 100%;
+                overflow-y: auto;
+                background-color: var(--bg-aside-cor);
+                // @include roll;
+            }
+        }
+        .index-body {
+            flex: 1;
+            position: relative;
+            background-color: var(--bg-index-cor);
+            .index-div {
+                padding: 20px;
+                @include roll;
+                .index-header {
+                }
+                .index-main {
+                    .index-main-div {
+                    }
+                }
+            }
+        }
+    }
+    .__document-tests {
+        padding: 10px;
+        height: 100%;
+        position: relative;
+        .tests-top {
+            .but-div {
+                &.on {
+                    background-color: var(
+                        --bg-aside-on-cor
+                    );
+                }
+            }
+        }
+    }
+    .__document-develop {
+        padding: 10px;
+        height: 100%;
+        position: relative;
+    }
+
+    .__document-single {
+        padding: 10px;
+        height: 100%;
+        position: relative;
+        .single-top {
+            .single-top-li {
+                @include flex-r;
+                .single-top-li-span {
+                    padding: 5px 10px;
+                }
+            }
+        }
+    }
+    .__document-compon {
+        padding: 10px;
+        height: 100%;
+        position: relative;
+        .__document-compon-body {
+            &.choice {
+                padding-left: 30px;
+            }
+        }
+        .__document-compon-choice {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            overflow-y: auto;
+            background-color: var(--bg-aside-cor);
+            .__document-compon-choice-but {
+                @include but;
+            }
+        }
+    }
+}

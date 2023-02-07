@@ -1,0 +1,100 @@
+{
+    "/***/": {
+        "prefix": "**",
+        "body": ["**", " * $1", " */"],
+        "description": "/***/"
+    },
+    "/*@title 文件": {
+        "prefix": "*@title",
+        "body": [
+            "**",
+            " * @title",
+            " * @name $1",
+            " * @author 方忠亚",
+            " * @description ",
+            " * @date ",
+            " */"
+        ],
+        "description": "const emit = defineEmits(["
+    },
+    "/*@props 多标签": {
+        "prefix": "*@props",
+        "body": [
+            "**",
+            " * @props",
+            " * @name $1",
+            " * @type ",
+            " * @default ",
+            " * @selectable ",
+            " * @description ",
+            " */"
+        ],
+        "description": "/*@props 多标签"
+    },
+    "@props 单标签": {
+        "prefix": "@props",
+        "body": ["@props { } $1= ( ) "],
+        "description": "/*@props 单标签"
+    },
+    "/*@slot 多标签": {
+        "prefix": "*@slot",
+        "body": [
+            "**",
+            " * @slot",
+            " * @name $1",
+            " * @selectable ",
+            " * @description ",
+            " */"
+        ],
+        "description": "/*@slot 多标签"
+    },
+    "@slot 单标签": {
+        "prefix": "@slot",
+        "body": ["@slot $1 ( ) "],
+        "description": "/*@slot 单标签"
+    },
+    "/*@emits 多标签": {
+        "prefix": "*@emits",
+        "body": [
+            "**",
+            " * @emits",
+            " * @name $1",
+            " * @selectable ",
+            " * @description ",
+            " */"
+        ],
+        "description": "/*@emits 多标签"
+    },
+    "@emits 单标签": {
+        "prefix": "@emits",
+        "body": ["@emits $1 ( ) "],
+        "description": "/*@emits 单标签"
+    },
+    "/*@expose 多标签": {
+        "prefix": "*@expose",
+        "body": [
+            "**",
+            " * @expose",
+            " * @name $1",
+            " * @selectable ",
+            " * @description ",
+            " */"
+        ],
+        "description": "/*@expose 多标签"
+    },
+    "@expose 单标签": {
+        "prefix": "@expose",
+        "body": ["@expose $1 ( ) "],
+        "description": "/*@expose 单标签"
+    },
+    "/*@error 问题说明": {
+        "prefix": "*@error",
+        "body": ["**", " * @error $1", " */"],
+        "description": "/*@error 问题说明"
+    },
+    "/*@proposal 建议说明": {
+        "prefix": "*@proposal",
+        "body": ["**", " * @proposal $1", " */"],
+        "description": "/*@proposal 建议说明"
+    }
+}
