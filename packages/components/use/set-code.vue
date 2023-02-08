@@ -185,7 +185,7 @@ function getFunctionBody(v: Function, key: string) {
     const propsText = props.propsText as ObjStr;
     const text = propsText[key];
     if (text) {
-        return text;
+        return 'function' + text;
     } else {
         const st = getFunctionFormat(
             prettierFormat(v.toString()),

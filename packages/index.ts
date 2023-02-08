@@ -8,7 +8,8 @@ export function defineConfig(config: Config) {
     return userConfig(config);
 }
 
-import '../archive.config';
+// import '../archive.config';
+
 export default {
     install: function (app: App, router: Router) {
         init(router);

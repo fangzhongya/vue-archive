@@ -44,7 +44,7 @@ function onBlur(e: Event) {
 function check(st: string): string {
     if (st) {
         st = getString(st);
-        emit('value', JSON.stringify(st));
+        emit('value', st, JSON.stringify(st));
         return st;
     } else {
         emit('value', undefined, JSON.stringify(''));

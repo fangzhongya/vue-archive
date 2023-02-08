@@ -156,6 +156,8 @@ function onChange() {
         } else {
             v = z;
         }
+    } else {
+        v = z;
     }
     emit('value', v, JSON.stringify(z));
     emit('change', v, curValue.value);

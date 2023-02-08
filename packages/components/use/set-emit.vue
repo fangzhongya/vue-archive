@@ -41,11 +41,15 @@ function setLabel(val: Spec) {
         val.description;
     return st;
 }
-function setValue(val: Spec) {
+function setValue(val: Spec): unknown[] {
     let name = val.name;
     if (props.value) {
         let arr = props.value[name];
-        return arr.arr;
+        if (arr) {
+            return arr.arr || [];
+        } else {
+            return [];
+        }
     } else {
         return [];
     }

@@ -80,7 +80,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-// import Use from '../use/index.js';
+import Use from '../use/index';
 import FInfo from './info.vue';
 import Md from '../md/index.vue';
 import Top from './top';

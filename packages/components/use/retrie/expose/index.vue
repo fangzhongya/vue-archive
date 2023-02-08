@@ -76,12 +76,12 @@ function getType(str: string) {
     }
 }
 
-function onQuery(val: ObjUnk, param: ObjStr) {
+function onQuery(val: ObjUnk) {
     let obj = props.getRef ? props.getRef() : undefined;
     let name = props.value?.name;
     if (name) {
         let arr = paramArr.value.map((key) => {
-            return param[key];
+            return val[key];
         });
         if (obj && obj[name]) {
             let v = obj[name](...arr);

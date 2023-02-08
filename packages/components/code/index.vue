@@ -121,7 +121,9 @@ function getData() {
             'vue',
         );
         getLocalTextArr(arr).then((v) => {
-            files.value = v;
+            files.value = v.filter((o) => {
+                return o.raw;
+            });
         });
     }
 }

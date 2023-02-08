@@ -433,7 +433,6 @@ export function getTestImportUrl(
                 .join('/');
             let v = key.substring(2);
             if (!r.test(v)) {
-                v = v + '.js';
                 key = key + '.js';
             }
             return {
@@ -462,7 +461,6 @@ export function getTestImportUrl(
                 .join('/');
             let v = vs.join('/');
             if (!r.test(v)) {
-                v = v + '.js';
                 key = key + '.js';
             }
             return {
@@ -515,6 +513,9 @@ export function getLocalTextArr(
 
 /***************components*********************/
 
+/**
+ * 获取整个组件数组对象
+ */
 function getComponents() {
     const example = getTests() as ExampleObj;
     const arr = getConfig('components') as Components[];

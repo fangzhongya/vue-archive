@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
         path: '/',
         name: '首页',
         meta: { title: '首页' },
-        redirect: { name: '__document' },
+        redirect: {},
     },
 ];
 
