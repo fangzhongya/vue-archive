@@ -1,6 +1,6 @@
 {
     "name": "@fangzhongya/vue-archive",
-    "private": true,
+    "private": false,
     "version": "0.0.1",
     "type": "module",
     "description ": "vue 组件注释生成文档",
@@ -26,9 +26,9 @@
         "preview": "vite preview"
     },
     "devDependencies": {
-        "@fangzhongya/create": "0.2.0-6",
-        "@fangzhongya/utils": "0.0.7-7",
-        "@fangzhongya/vue-components": "0.1.2-8",
+        "@fangzhongya/create": "0.2.0-13",
+        "@fangzhongya/utils": "0.0.7-9",
+        "@fangzhongya/vue-components": "0.1.2-9",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@types/node": "^18.13.0",
         "@vitejs/plugin-vue": "^4.0.0",
