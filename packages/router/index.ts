@@ -3,6 +3,8 @@ import { setSession, getSession } from '../utils/storage';
 import type {
     Router,
     RouteRecordRaw,
+    LocationQueryRaw,
+    RouteParamsRaw,
     RouteLocationNormalizedLoaded,
 } from 'vue-router';
 import type {
@@ -139,21 +141,21 @@ export function getPageParams(
     }
 }
 
-interface PushObj {
+type PushObj = {
     path?: string;
     name?: string;
-    params?: ObjUnk;
-    query?: ObjUnk;
-}
+    params?: RouteParamsRaw;
+    query?: LocationQueryRaw;
+};
 
 export function toPage(
     router: Router,
     push: PushObj,
     type: ToPush = 'push',
 ) {
-    let name = push.name;
     let path = push.path || '';
-    let params = push.params || {};
+    const name = push.name;
+    const params = push.params || {};
     router[type](push);
     if (name) {
         path = router.resolve({ name: name }).path;
