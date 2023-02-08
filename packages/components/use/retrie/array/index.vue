@@ -8,6 +8,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, watch } from 'vue';
 import { prettierArrFormat } from '../../util';
 const props = defineProps({
     modelValue: {
@@ -27,14 +28,14 @@ watch(
     },
 );
 
-function onBlur(e) {
-    let v = e.target.value;
+function onBlur(e: Event) {
+    const v = (e.target as EventTarget)?.value;
     let z = check(v);
     if (z) {
         value.value = z;
     }
 }
-function getChange(str) {
+function getChange(str: string) {
     return new Function(
         '',
         `{
@@ -43,7 +44,7 @@ function getChange(str) {
     }`,
     );
 }
-function check(st) {
+function check(st: string) {
     let v;
     if (st) {
         try {

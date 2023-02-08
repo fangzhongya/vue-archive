@@ -1,15 +1,19 @@
 import { mergeObject } from './utils/util';
-import type { Component as VueComponent } from 'vue';
+import type { AsyncComponentLoader } from 'vue';
 
 export interface ObjStr {
     [key: string]: string;
+}
+
+export interface ObjUnk {
+    [key: string]: unknown;
 }
 export type GetRaw = () => Promise<unknown>;
 
 export type Globs = Record<string, () => Promise<unknown>>;
 
 export interface GlobComs {
-    [key: string]: VueComponent;
+    [key: string]: AsyncComponentLoader;
 }
 
 export interface Component {

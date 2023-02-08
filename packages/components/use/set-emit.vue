@@ -24,14 +24,15 @@
     </div>
 </template>
 <script lang="ts" setup>
+import type { Spec } from '../../utils/index';
 const props = defineProps({
-    list: Array,
+    list: Array<Spec>,
     value: {
         type: Object,
     },
 });
 
-function setLabel(val) {
+function setLabel(val: Spec) {
     let st =
         val.name +
         ': (' +
@@ -40,16 +41,16 @@ function setLabel(val) {
         val.description;
     return st;
 }
-function setValue(val) {
+function setValue(val: Spec) {
     let name = val.name;
     if (props.value) {
         let arr = props.value[name];
-        return arr;
+        return arr.arr;
     } else {
         return [];
     }
 }
-function setDate(val) {
+function setDate(val: Spec) {
     let name = val.name;
     if (props.value) {
         let arr = props.value[name];

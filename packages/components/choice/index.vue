@@ -43,18 +43,19 @@ import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { getPageParams } from '../../router/index';
 import type { ComponentsObj } from '../../utils/common';
+import type { ObjUnk } from '../../config';
 import type { Ref } from 'vue';
 const props = defineProps({
     getName: {
         type: Function,
-        default(query: { [key: string]: any }): string {
-            return query.id;
+        default(query: ObjUnk): string {
+            return query.id as string;
         },
     },
     getKey: {
         type: Function,
-        default(params: { [key: string]: any }): string {
-            return params.key;
+        default(params: ObjUnk): string {
+            return params.key as string;
         },
     },
 });

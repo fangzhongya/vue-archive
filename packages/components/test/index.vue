@@ -45,7 +45,7 @@ import type {
 import { getNotes } from './index';
 import { getLocalTextTests } from '../../utils/glob';
 import type { TestsObj } from '../../utils/common';
-import type { SpecObjs } from './index';
+import type { SpecObjs } from '../../utils/index';
 const props = defineProps({
     value: Object,
     read: {
@@ -93,10 +93,12 @@ function getData() {
                 .then((text) => {
                     codetext.value = text;
                     let { titles, states } = getNotes(text);
+                    console.log('states', states);
                     title.value = titles;
                     const so = states[0];
                     if (so && so.type) {
-                        state.value = so.type;
+                        console.log('so', so);
+                        state.value = so.type.type;
                     }
                     emit(
                         'state',

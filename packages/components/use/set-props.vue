@@ -14,21 +14,42 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { nextTick } from 'vue';
+import { ref, nextTick, watch } from 'vue';
 import Retrie from './retrie/index.vue';
+import type { Spec } from '../../utils/index';
+import type { ObjUnk } from '../../config';
+import type { Ref } from 'vue';
 const props = defineProps({
     name: String,
-    list: Array,
+    list: Array<Spec>,
 });
+
+type SelectsObj = {
+    label: string;
+    prop: unknown;
+};
+
+type Selects = {
+    [key: string]: Array<SelectsObj>;
+};
+
+type RList = {
+    label: string;
+    prop: string;
+    type: string;
+    dataType: string | string[];
+    select?: string | Array<SelectsObj>;
+};
+
 const emit = defineEmits(['change']);
-const selects = ref({});
+const selects: Ref<Selects> = ref({});
 const refresh = ref(0);
 
-const propsValue = ref({});
-const rlist = ref([]);
+const propsValue: Ref<ObjUnk> = ref({});
+const rlist: Ref<RList[]> = ref([]);
 function setVlaue() {
     propsValue.value = {};
-    let arr = [];
+    const arr: RList[] = [];
     props.list?.forEach((val) => {
         let name = val.name;
         if (!name.includes('.')) {
@@ -50,7 +71,7 @@ function setVlaue() {
 
             let selectable = (val.selectable || '').trim();
             if (selectable && type != 'boolean') {
-                let arr = [];
+                let arr: SelectsObj[] = [];
                 selectable.split(',').forEach((v) => {
                     if (v) {
                         let z = v.split(':');
@@ -83,7 +104,7 @@ function setVlaue() {
     rlist.value = arr;
 }
 
-function setLabel(name, val) {
+function setLabel(name: string, val: Spec) {
     let st =
         name +
         ': ' +
@@ -100,8 +121,8 @@ function setLabel(name, val) {
     return st;
 }
 
-function getType(value) {
-    let arr = [];
+function getType(value: string) {
+    let arr: string[] = [];
     let str = (value || '').trim().toLowerCase();
     str.split(',').forEach((v) => {
         v = v.trim();
@@ -112,12 +133,12 @@ function getType(value) {
     return [...new Set(arr)].sort();
 }
 
-function onQuery(obj, text) {
+function onQuery(obj: unknown, text: unknown) {
     let value = Object.assign({}, obj);
     emit('change', value, text);
 }
 
-let t = null;
+let t: NodeJS.Timeout;
 function setRefresh() {
     clearTimeout(t);
     t = setTimeout(() => {

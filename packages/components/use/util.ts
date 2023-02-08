@@ -2,7 +2,7 @@ import prettier from 'prettier/standalone';
 import parserTypescript from 'prettier/parser-typescript';
 import parserHtml from 'prettier/parser-html';
 
-export function prettierFormat(st) {
+export function prettierFormat(st: string) {
     let str = prettier.format(st, {
         parser: 'typescript',
         plugins: [parserTypescript],
@@ -10,29 +10,29 @@ export function prettierFormat(st) {
     return str.replace(/\;(\s|\n\r)*$/, '');
 }
 
-export function prettierObjFormat(st) {
+export function prettierObjFormat(st: string) {
     st = 'let a = ' + st;
     let str = prettierFormat(st);
     return str.replace(/^let a = /, '');
 }
 
-export function prettierArrFormat(st) {
+export function prettierArrFormat(st: string) {
     let str = prettierFormat(st);
     return str;
 }
-export function prettierFunFormat(st) {
+export function prettierFunFormat(st: string) {
     let str = prettierFormat(st);
     return str;
 }
 
-export function prettierHtml(st) {
+export function prettierHtml(st: string) {
     return prettier.format(st, {
         parser: 'html',
         plugins: [parserHtml],
     });
 }
 
-export function vueFormat(st, kg = '') {
+export function vueFormat(st: string, kg = '') {
     let arr = (st + '').trim().split(/\n/);
     arr = arr.map((v) => {
         return kg + v;
@@ -40,7 +40,7 @@ export function vueFormat(st, kg = '') {
     return arr.join('\n');
 }
 
-export function getFunBody(sr = '') {
+export function getFunBody(sr: string = ''): string {
     sr = sr.trim();
     let body =
         '[\\s|\\n|\\r]*\\{((.|\n|\r)+?)\\}[\\s|\\n|\\r]*';
@@ -53,7 +53,7 @@ export function getFunBody(sr = '') {
     }
 }
 
-export function getFunctionFormat(v) {
+export function getFunctionFormat(v: Function | string) {
     if (v) {
         let st = v.toString();
         st = st.trim();
@@ -81,7 +81,7 @@ export function getFunctionFormat(v) {
     }
 }
 
-function sonType(type) {
+function sonType(type: string) {
     // /^([a-z|A-Z]+)\<(.+)\>$/
     let reg = new RegExp('^([a-z|A-Z]+)\\<(.+)\\>$');
     let vts = reg.exec(type);
@@ -93,7 +93,7 @@ function sonType(type) {
     }
 }
 
-function sonTypes(type, arr) {
+function sonTypes(type: string, arr: Array<string>) {
     let obj = sonType(type);
     if (obj) {
         arr.push(obj.own);
@@ -110,11 +110,11 @@ function sonTypes(type, arr) {
  * @param {*} type
  * @returns
  */
-export function getSonType(type) {
+export function getSonType(type: Array<string> | string) {
     if (type instanceof Array) {
         type = type[0];
     }
-    let arr = [];
+    const arr: string[] = [];
     if (type) {
         sonTypes(type, arr);
     }
@@ -126,11 +126,11 @@ export function getSonType(type) {
  * @param {*} obj
  * @returns
  */
-export function getObjType(obj) {
+export function getObjType(obj: unknown) {
     const type = Object.prototype.toString.call(obj);
     const reg = /^\[[O|o]bject (.*)\]$/;
     let vts = reg.exec(type);
-    let t = typeof obj;
+    let t: string = typeof obj;
     if (vts && vts.length > 0) {
         t = vts[1].toLowerCase();
     }
@@ -143,7 +143,10 @@ export function getObjType(obj) {
  * @param {*} type
  * @returns
  */
-export function isTypeEqual(obj, type) {
+export function isTypeEqual(
+    obj: unknown,
+    type: string[] | string,
+) {
     const t = getObjType(obj);
     const v = getSonType(type)[0];
     if (v && v != '*') {
@@ -157,7 +160,7 @@ export function isTypeEqual(obj, type) {
  * @param {*} st
  * @returns
  */
-export function getString(st) {
+export function getString(st: unknown): string {
     if (typeof st == 'string') {
         let is = false;
         if (/^\'(.|\n|\r)*\'$/.test(st)) {
@@ -170,12 +173,12 @@ export function getString(st) {
         if (is) {
             st = st.substring(1, st.length - 1);
         }
-        return st;
-    } else if (typeof st == 'object') {
+        return st + '';
+    } else if (typeof st == 'object' && st) {
         return st.toString();
     } else if (
-        typeof st == 'null' ||
-        typeof st == 'undefined'
+        typeof st == 'undefined' ||
+        (typeof st == 'object' && !st)
     ) {
         return '';
     } else {
@@ -186,11 +189,11 @@ export function getString(st) {
 /**
  * 配置字符串的类型
  */
-export function isDefaultType(st) {
+export function isDefaultType(st: string): string {
     st = (st + '')
         .replace(/^(\s|\n|r)*/, '')
         .replace(/(\s|\n|r)*$/, '');
-    let type;
+    let type = '';
     if (/^\'(.|\n|\r)*\'$/.test(st)) {
         type = 'string';
     } else if (/^\"(.|\n|\r)*\"$/.test(st)) {

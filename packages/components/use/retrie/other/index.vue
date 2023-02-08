@@ -8,12 +8,13 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, watch } from 'vue';
 import { prettierFormat, isTypeEqual } from '../../util';
 const props = defineProps({
     modelValue: {
         type: null,
     },
-    dataType: { type: [String, Array] },
+    dataType: { type: [String, Array<string>] },
     disabled: Boolean,
     list: {
         type: Array,
@@ -41,14 +42,14 @@ watch(
     },
 );
 
-function onBlur(e) {
-    let v = e.target.value;
+function onBlur(e: Event) {
+    const v = (e.target as EventTarget)?.value;
     let z = check(v);
     if (z) {
         value.value = z;
     }
 }
-function getChange(str) {
+function getChange(str: string) {
     return new Function(
         '',
         `{
@@ -57,13 +58,13 @@ function getChange(str) {
     }`,
     );
 }
-function check(st) {
+function check(st: string) {
     let v;
     if (st) {
         try {
             const fu = getChange(st);
             const z = fu();
-            if (isTypeEqual(z, props.dataType)) {
+            if (isTypeEqual(z, props.dataType || [])) {
                 v = prettierFormat(st);
                 emit('value', z, v);
                 emit('error', false);

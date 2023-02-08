@@ -66,7 +66,7 @@
                 </template>
             </div>
         </div>
-        <!-- <div class="compo-use">
+        <div class="compo-use">
             <Use
                 :value="props.value"
                 :param="{
@@ -76,7 +76,7 @@
                     expose: vexpose,
                 }"
             ></Use>
-        </div> -->
+        </div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -93,9 +93,10 @@ import {
     slot as fslot,
 } from '../../utils/props';
 import { getNotes, getKeyMds } from './index';
+import type { FTableList } from './index';
 import type { MdObj } from '../../utils/common';
 import type { Ref } from 'vue';
-import type { SpecObjs } from './index';
+import type { SpecObjs } from '../../utils/index';
 const props = defineProps({
     value: Object,
 });
@@ -109,7 +110,7 @@ const iss = reactive({
     top: true,
 });
 const vprops: Ref<SpecObjs[]> = ref([]);
-const tprops = [
+const tprops: FTableList[] = [
     {
         label: '属性名',
         prop: 'name',
@@ -137,7 +138,7 @@ const tprops = [
     },
 ];
 const vemits: Ref<SpecObjs[]> = ref([]);
-const temits = [
+const temits: FTableList[] = [
     {
         label: '事件名',
         prop: 'name',
@@ -155,7 +156,7 @@ const temits = [
     },
 ];
 const vexpose: Ref<SpecObjs[]> = ref([]);
-const texpose = [
+const texpose: FTableList[] = [
     {
         label: '方法名',
         prop: 'name',
@@ -179,7 +180,7 @@ const texpose = [
 ];
 
 const vslot: Ref<SpecObjs[]> = ref([]);
-const tslot = [
+const tslot: FTableList[] = [
     {
         label: '插槽名',
         prop: 'name',

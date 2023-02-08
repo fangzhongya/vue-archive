@@ -1,7 +1,7 @@
 /** @format */
 
 import { getConfig } from '../config';
-import type { Component as VueComponent } from 'vue';
+import type { AsyncComponentLoader } from 'vue';
 import {
     getComponentsArr,
     isComprops,
@@ -63,7 +63,7 @@ interface ExamplessObj {
 const exampleObj: ExamplessObj = {};
 
 const examplesObj: {
-    [key: string]: VueComponent;
+    [key: string]: AsyncComponentLoader;
 } = {};
 
 const examplesRawObj: {

@@ -2,7 +2,7 @@
     <div class="form-select">
         <input
             :value="label"
-            readonly="readonly"
+            readonly
             placeholder="请选择"
             type="text"
             :disabled="props.disabled"
@@ -47,8 +47,11 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { toggleArray } from '../../../../utils/common';
+import { ref, watch, computed } from 'vue';
+import { toggleArray } from '../../../../utils/util';
 import { getSonType, getString } from '../../util';
+import type { Ref } from 'vue';
+import type { ObjUnk } from '../../../../config';
 const props = defineProps({
     modelValue: {
         type: null,
@@ -72,7 +75,7 @@ const emit = defineEmits(['value', 'change']);
 const refInput = ref();
 const isShow = ref(false);
 const isShowList = ref(false);
-const curValue = ref([]);
+const curValue: Ref<unknown[]> = ref([]);
 const label = computed(() => {
     return curValue.value
         .map((o) => {
@@ -82,11 +85,8 @@ const label = computed(() => {
 });
 
 const valueType = computed(() => {
-    let t = props.dataType;
-    if (t instanceof Array) {
-        t = t[0];
-    }
-    let arr = getSonType('string') || [];
+    let t = (props.dataType || '') as string | string[];
+    let arr = getSonType(t) || [];
     return arr[1];
 });
 
@@ -100,7 +100,7 @@ watch(
     },
 );
 
-function getValue(arr = []) {
+function getValue(arr: unknown[] = []) {
     if (valueType.value == 'string') {
         return arr.map((v) => {
             return getString(v);
@@ -118,10 +118,24 @@ function getValue(arr = []) {
     }
 }
 
+function getChange(str: string) {
+    return new Function(
+        '',
+        `{
+        var a = ${str};
+        return a;
+    }`,
+    );
+}
+
 function setValue() {
     curValue.value = [];
     let v = props.modelValue;
-    let value = JSONParse(v, 'array') || [];
+    let value: unknown[] = [];
+    const gv = getChange(v);
+    if (gv instanceof Array) {
+        value = gv;
+    }
     if (props.list) {
         for (
             let index = 0;
@@ -137,25 +151,27 @@ function setValue() {
     onValue();
 }
 
-function setLabel(v) {
+function setLabel(v: unknown) {
     let label = props.config?.label;
-    if (label && typeof v == 'object') {
-        return v[label];
+    if (label && typeof v == 'object' && v) {
+        const t = v as ObjUnk;
+        return t[label];
     } else {
         return v;
     }
 }
 
-function setProp(v) {
+function setProp(v: unknown) {
     let prop = props.config?.prop;
-    if (prop && typeof v == 'object') {
-        return v[prop];
+    if (prop && typeof v == 'object' && v) {
+        const t = v as ObjUnk;
+        return t[prop];
     } else {
         return v;
     }
 }
 
-function isActive(v) {
+function isActive(v: unknown) {
     return curValue.value
         .map((z) => {
             return setProp(z);
@@ -182,7 +198,7 @@ function onMouseout() {
     isShowList.value = false;
 }
 
-function onSelect(v) {
+function onSelect(v: unknown) {
     if (refInput.value) {
         refInput.value.focus();
     }

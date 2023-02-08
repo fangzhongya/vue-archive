@@ -1,6 +1,6 @@
 import { defineComponent, h } from 'vue';
 import type { VNode } from 'vue';
-import type { SpecObjs } from './index';
+import type { SpecObjs } from '../../utils/index';
 
 /**
  * @title
@@ -18,7 +18,7 @@ export default defineComponent({
     render(
         propss: any,
         a: any,
-        props: { value: SpecObjs },
+        props: { value: SpecObjs[] },
     ) {
         let doms: VNode[] = [];
         let domss: VNode[] = [];

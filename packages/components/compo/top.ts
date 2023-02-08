@@ -1,6 +1,6 @@
 import { defineComponent, h } from 'vue';
 import type { VNode } from 'vue';
-import type { SpecObjs } from './index';
+import type { SpecObjs } from '../../utils/index';
 /**
  * @title
  * @author 方忠亚

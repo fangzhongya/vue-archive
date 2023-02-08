@@ -48,6 +48,7 @@ import { getTestNameObj } from '../../utils/glob';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { getPageParams } from '../../router/index';
+import { ObjUnk } from '../../config';
 import type {
     ComponentsObj,
     TestsObj,
@@ -58,11 +59,12 @@ const params = getPageParams(route);
 const value = ref({});
 const test: Ref<TestsObj | undefined> = ref();
 const isShow = ref(false);
-function getKey(params: { [key: string]: any }) {
+function getKey(params: ObjUnk) {
     return params.comkey;
 }
-function getName(query: { [key: string]: any }) {
-    let name = (query.id || '').split('/')[0] || '';
+function getName(query: ObjUnk) {
+    const str = (query.id || '') as string;
+    let name = str.split('/')[0] || '';
     return name;
 }
 
@@ -73,7 +75,7 @@ function onChange(v: ComponentsObj) {
     value.value = v;
     test.value = getTestNameObj(
         route.query.id + '',
-        params.key,
+        params.key as string,
         v.key,
     )[0];
 }

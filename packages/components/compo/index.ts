@@ -2,19 +2,18 @@ import { getTextNotes } from '../../utils/index';
 import { getLocalTextComponents } from '../../utils/glob';
 
 export { getKeyMds } from '../../utils/glob';
+import type { ObjUnk } from '../../config';
 
-import type { Block, Spec } from '../../utils/index';
+import type {
+    Block,
+    Spec,
+    Specs,
+    SpecObjs,
+} from '../../utils/index';
 
-interface Specs {
-    [key: string]: Spec;
-}
 interface ArrFi {
     key: string;
     value: Specs;
-}
-export interface SpecObjs extends Specs {
-    descriptions: string;
-    [key: string]: any;
 }
 
 function getDefault(ss: string, iss?: boolean) {
@@ -229,9 +228,9 @@ function addExpose(value: SpecObjs) {
 }
 
 function getFilter(obj: Block, arrs?: Array<string>) {
-    const _objs: SpecObjs = {
+    const _objs = {
         descriptions: obj?.description || '',
-    };
+    } as SpecObjs;
     const arr: ArrFi[] = [];
     if (obj?.tags) {
         obj?.tags?.forEach((v: Spec) => {
@@ -344,3 +343,16 @@ export function getNotes(key: string): Promise<NotesObj> {
         });
     });
 }
+
+export type FTableFormatter = (
+    data: SpecObjs,
+    item?: FTableList,
+    index?: number,
+    key?: number,
+) => string;
+
+export type FTableList = {
+    label: string;
+    prop: string;
+    formatter?: FTableFormatter;
+};

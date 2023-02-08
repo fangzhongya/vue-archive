@@ -2,7 +2,7 @@ import { parse as commentParserParse } from 'comment-parser';
 
 import { parse as esModuleLexerParse } from 'es-module-lexer';
 
-export interface Spec {
+export type Spec = {
     tag: string;
     name: string;
     default?: string;
@@ -10,15 +10,27 @@ export interface Spec {
     optional: boolean;
     description: string;
     selectable: string;
-    problems: any;
-    source: any;
-}
+    problems?: unknown;
+    source?: unknown;
+} & {
+    [key: string]: string;
+};
 export interface Block {
     description: string;
     tags: Spec[];
-    source: any;
-    problems: any;
+    source: unknown;
+    problems: unknown;
 }
+
+export interface Specs {
+    [key: string]: Spec;
+}
+
+interface Descriptions {
+    descriptions: string;
+}
+
+export type SpecObjs = Descriptions & Specs;
 
 export function getTextNotes(text: string) {
     if (text) {

@@ -8,6 +8,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, watch } from 'vue';
 const props = defineProps({
     modelValue: {
         type: null,
@@ -26,11 +27,11 @@ watch(
     },
 );
 
-function onBlur(e) {
-    let v = e.target.value;
+function onBlur(e: Event) {
+    const v = (e.target as EventTarget)?.value;
     check(v);
 }
-function check(st) {
+function check(st: string) {
     if (st) {
         const z = Number(st);
         if (isNaN(z)) {

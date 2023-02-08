@@ -8,6 +8,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, watch, computed } from 'vue';
 import { getFunctionFormat } from '../../util';
 const props = defineProps({
     modelValue: {
@@ -29,7 +30,10 @@ const props = defineProps({
 const param = computed(() => {
     return (
         props.list?.map((o) => {
-            return o[props.config.prop];
+            const v = o as {
+                [key: string]: string;
+            };
+            return v[props.config.prop];
         }) || []
     );
 });
@@ -46,15 +50,15 @@ watch(
     },
 );
 
-function onBlur(e) {
-    let v = e.target.value;
+function onBlur(e: Event) {
+    const v = (e.target as EventTarget)?.value;
     let z = check(v);
     if (z) {
         value.value = z;
     }
 }
 
-function getChange(v) {
+function getChange(v: string) {
     return new Function(...param.value, v);
 }
 
@@ -62,7 +66,7 @@ function getParamStr() {
     return `(${param.value.join(', ')}) `;
 }
 
-function check(st) {
+function check(st: string) {
     let v;
     if (st) {
         try {

@@ -1,5 +1,5 @@
 import { setSession, getSession } from './storage';
-import type { Component as VueComponent } from 'vue';
+import type { AsyncComponentLoader } from 'vue';
 import {
     humpToLine,
     appearNum,
@@ -81,7 +81,7 @@ export interface TestsObj extends TextObj {
     // 组件key
     comkey: string;
 
-    component: VueComponent;
+    component: AsyncComponentLoader;
 }
 
 export interface ComponentsObj extends Component, TextObj {
@@ -89,7 +89,7 @@ export interface ComponentsObj extends Component, TextObj {
     tdir: string;
     adir: string;
     aliasNames: Array<string>;
-    component?: VueComponent;
+    component?: AsyncComponentLoader;
     comprops?: string;
     tests:
         | {

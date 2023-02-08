@@ -2,7 +2,7 @@
     <div class="form-select">
         <input
             :value="setLabel(curValue)"
-            readonly="readonly"
+            readonly
             placeholder="请选择"
             type="text"
             :disabled="props.disabled"
@@ -43,6 +43,9 @@
 </template>
 <script lang="ts" setup>
 import { getString } from '../../util';
+import type { ObjUnk } from '../../../../config';
+import { ref, watch } from 'vue';
+import type { Ref } from 'vue';
 const props = defineProps({
     modelValue: {
         type: null,
@@ -65,7 +68,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['value', 'change']);
 const isShow = ref(false);
-const curValue = ref({});
+const curValue: Ref<unknown> = ref({});
 
 watch(
     () => props.modelValue,
@@ -96,25 +99,27 @@ function setValue() {
     }
 }
 
-function setLabel(v) {
+function setLabel(v: unknown) {
     let label = props.config?.label;
-    if (label && typeof v == 'object') {
-        return v[label];
+    if (label && typeof v == 'object' && v) {
+        const t = v as ObjUnk;
+        return t[label];
     } else {
         return v;
     }
 }
 
-function setProp(v) {
+function setProp(v: unknown) {
     let prop = props.config?.prop;
-    if (prop && typeof v == 'object') {
-        return v[prop];
+    if (prop && typeof v == 'object' && v) {
+        const t = v as ObjUnk;
+        return t[prop];
     } else {
         return v;
     }
 }
 
-function isActive(v) {
+function isActive(v: unknown) {
     return setProp(v) === setProp(curValue.value);
 }
 
@@ -130,25 +135,30 @@ function onBlur() {
     }, 100);
 }
 
-function onSelect(v) {
+function onSelect(v: unknown) {
     curValue.value = v;
     onChange();
 }
 function onChange() {
-    let z = setProp(curValue.value);
+    const z = setProp(curValue.value);
+    let v: unknown;
     if (props.dataType && props.dataType.length == 1) {
         let type = props.dataType[0];
         if (type == 'string') {
-            z = getString(z);
+            v = getString(z);
         } else if (type == 'number') {
-            z = Number(z);
-            if (isNaN(z)) {
-                z = 0;
+            const t = Number(z);
+            if (isNaN(t)) {
+                v = 0;
+            } else {
+                v = t;
             }
+        } else {
+            v = z;
         }
     }
-    emit('value', z, JSON.stringify(z));
-    emit('change', z, curValue.value);
+    emit('value', v, JSON.stringify(z));
+    emit('change', v, curValue.value);
 }
 </script>
 <style lang="scss">

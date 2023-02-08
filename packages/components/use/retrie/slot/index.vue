@@ -16,6 +16,7 @@
 </template>
 <script lang="ts" setup>
 import { prettierHtml } from '../../util';
+import { ref } from 'vue';
 const props = defineProps({
     value: {
         type: Object,
@@ -35,11 +36,10 @@ function onClick() {
         console.log('error', error);
     }
 }
-function onBlur(e) {
-    let v = e.target.value;
+function onBlur(e: Event) {
+    const v = (e.target as EventTarget)?.value;
     try {
-        let z = prettierHtml(v);
-        value.value = z;
+        value.value = prettierHtml(v);
         emit('error', false);
     } catch (error) {
         emit('error', true);

@@ -11,7 +11,10 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, computed } from 'vue';
+import type { Ref } from 'vue';
 import Retrie from '../index.vue';
+import type { ObjUnk, ObjStr } from '../../../../config';
 const props = defineProps({
     getRef: {
         type: Function,
@@ -23,7 +26,7 @@ const props = defineProps({
 });
 const label = ref('');
 const value = ref('');
-const paramArr = ref([]);
+const paramArr: Ref<string[]> = ref([]);
 const rlist = computed(() => {
     paramArr.value = [];
     const v = props.value;
@@ -57,7 +60,7 @@ const rlist = computed(() => {
     return [];
 });
 
-function getType(str) {
+function getType(str: string) {
     if (str) {
         str = (str + '').trim().toLowerCase();
         const reg = /^\<([a-z|\<|\>|\|]+)\>/;
@@ -73,15 +76,17 @@ function getType(str) {
     }
 }
 
-function onQuery(val, param) {
-    let obj = props.getRef();
-    let name = props.value.name;
+function onQuery(val: ObjUnk, param: ObjStr) {
+    let obj = props.getRef ? props.getRef() : undefined;
+    let name = props.value?.name;
     if (name) {
         let arr = paramArr.value.map((key) => {
             return param[key];
         });
-        let v = obj[name](...arr);
-        value.value = JSON.stringify(v);
+        if (obj && obj[name]) {
+            let v = obj[name](...arr);
+            value.value = JSON.stringify(v);
+        }
     } else {
         console.log('请选择方法');
     }

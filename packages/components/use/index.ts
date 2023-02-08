@@ -2,7 +2,8 @@ import {
     h,
     defineComponent,
     resolveComponent,
-    ref,
+    defineAsyncComponent,
+    reactive,
 } from 'vue';
 import SetProps from './set-props.vue';
 import SetEmit from './set-emit.vue';
@@ -15,7 +16,11 @@ import {
     getExposeValue,
     getSlotValue,
 } from '../../utils/props';
-import { firstUpper } from '../../utils/common';
+import { firstUpper } from '../../utils/util';
+import type { ComponentPublicInstance } from 'vue';
+import type { SpecObjs, Spec } from '../../utils/index';
+import type { ObjUnk, ObjStr } from '../../config';
+import type { ComponentsObj } from '../../utils/common';
 
 /**
  * @title
@@ -35,17 +40,26 @@ export default defineComponent({
             type: Object,
         },
     },
-    // setup(props) {
-    // return () => h('div', '这个应该测试js文件组件');
-    // },
-    render(propss, a, props, b, data) {
+    render(
+        propss: any,
+        a: any,
+        props: {
+            value: ComponentsObj;
+            param: { [key: string]: SpecObjs[] };
+        },
+        b: any,
+        data: {
+            propsValue: ObjUnk;
+            propsText: ObjUnk;
+        },
+    ) {
         console.log('render', new Date().getTime());
         const rdata = reactive({
-            emitValue: {},
-            slotValue: {},
+            emitValue: {} as ObjUnk,
+            slotValue: {} as ObjStr,
         });
         const value = props.value;
-        let dom = 'div';
+        let dom = 'div' as any;
         if (value.component) {
             dom = defineAsyncComponent(value.component);
         } else if (value.name) {
@@ -56,8 +70,8 @@ export default defineComponent({
         const es = getEmitsValue(param.emits);
         const res = getExposeValue(param.expose);
         const ss = getSlotValue(param.slot);
-        const propsObj = {};
-        const slotObj = {};
+        const propsObj = {} as ObjUnk;
+        const slotObj = {} as ObjUnk;
         ps.forEach((val) => {
             let name = val.name;
             if (!name.includes('.')) {
@@ -71,7 +85,7 @@ export default defineComponent({
                             description: val.description,
                             selectable:
                                 'value:[' + val.type + ']',
-                        });
+                        } as Spec);
                     }
                 }
             }
@@ -88,17 +102,22 @@ export default defineComponent({
                 knam = firstUpper(knam);
             }
             const name = 'on' + knam;
-            propsObj[name] = (...arr) => {
-                rdata.emitValue[val.name] = arr;
-                rdata.emitValue[val.name]._date_ =
-                    new Date().getTime();
+            propsObj[name] = (...arr: unknown[]) => {
+                const ss = {
+                    arr,
+                    _date_: new Date().getTime(),
+                };
+                rdata.emitValue[val.name] = ss;
             };
         });
-        let refDom;
+        let refDom:
+            | Element
+            | ComponentPublicInstance
+            | null;
 
         ss.forEach((val) => {
             const name = val.name || 'default';
-            slotObj[name] = (scope) => {
+            slotObj[name] = (scope: any) => {
                 if (rdata.slotValue[name]) {
                     return h(
                         defineComponent({
@@ -198,7 +217,10 @@ export default defineComponent({
                     h(SetSlot, {
                         name: value.name,
                         list: ss,
-                        onChange: (name, str) => {
+                        onChange: (
+                            name: string,
+                            str: string,
+                        ) => {
                             rdata.slotValue[name] = str;
                         },
                     }),

@@ -51,6 +51,8 @@
     </div>
 </template>
 <script lang="ts" setup>
+import type { FTableList } from './index';
+import type { SpecObjs } from '../../utils/index';
 const props = defineProps({
     /**
      * table列表
@@ -61,28 +63,29 @@ const props = defineProps({
      * }
      */
     list: {
-        type: Array,
+        type: Array<FTableList>,
         default() {
             return [];
         },
     },
     value: {
-        type: Array,
+        type: Array<SpecObjs>,
         default() {
             return [];
         },
     },
 });
+
 function setValue(
-    data: any,
-    item: any,
+    data: SpecObjs,
+    item: FTableList,
     index: number,
     key: number,
 ) {
     if (item.formatter) {
-        return item.formatter(data, item, index);
-    } else if (item.props) {
-        return data[item.props];
+        return item.formatter(data, item, index, key);
+    } else if (item.prop) {
+        return data[item.prop];
     }
 }
 </script>

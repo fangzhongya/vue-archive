@@ -1,5 +1,11 @@
 import { getTextNotes } from '../../utils/index';
-import type { Block, Spec } from '../../utils/index';
+
+import type {
+    Block,
+    Spec,
+    Specs,
+    SpecObjs,
+} from '../../utils/index';
 
 function getObj(v: Spec) {
     delete v.problems;
@@ -7,22 +13,15 @@ function getObj(v: Spec) {
     return v;
 }
 
-interface Specs {
-    [key: string]: Spec;
-}
 interface ArrFi {
     key: string;
     value: Specs;
 }
-export interface SpecObjs extends Specs {
-    descriptions: string;
-    [key: string]: any;
-}
 
 function getFilter(obj: Block, keyArr: string[]) {
-    const _objs: SpecObjs = {
+    const _objs = {
         descriptions: obj?.description || '',
-    };
+    } as SpecObjs;
     const arr: ArrFi[] = [];
     if (obj?.tags) {
         obj?.tags?.forEach((v, index) => {

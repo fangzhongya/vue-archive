@@ -21,6 +21,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, watch } from 'vue';
 const props = defineProps({
     modelValue: {
         type: null,
@@ -49,7 +50,7 @@ watch(
     },
 );
 
-function check(st) {
+function check(st: unknown) {
     if (typeof st == 'string') {
         if (st === 'true' || st === '1') {
             return true;
@@ -65,7 +66,7 @@ function check(st) {
     }
 }
 
-function onClick(is) {
+function onClick(is: unknown) {
     checked.value = check(is) || false;
     emit(
         'value',

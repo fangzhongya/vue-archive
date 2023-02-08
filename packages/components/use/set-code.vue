@@ -27,6 +27,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, computed } from 'vue';
 import {
     getFunctionFormat,
     prettierFormat,
@@ -35,11 +36,12 @@ import {
 } from './util';
 import Highlight from '../code/highlight.vue';
 import { copyCode } from '../../utils/index';
+import type { ObjStr, ObjUnk } from '../../config';
 import {
     firstLower,
     humpToLine,
     firstUpper,
-} from '../../utils/common';
+} from '../../utils/util';
 const props = defineProps({
     name: {
         type: String,
@@ -55,19 +57,21 @@ const props = defineProps({
     },
 });
 const html = computed(() => {
-    let tarr = [];
-    let sarr = [];
+    const tarr: string[] = [];
+    const sarr: string[] = [];
     let is = true;
-    Object.keys(props.value).forEach((key) => {
-        let val = props.value[key];
+    const value = props.value as ObjUnk;
+    Object.keys(value).forEach((key) => {
+        let val = value[key];
         if (
             /^on[A-Z]/.test(key) &&
             typeof val == 'function'
         ) {
             let name = key.substring(2);
-            let knam = key.split(':');
+            const knam = key.split(':');
+            let strs: string;
             if (knam.length > 1) {
-                knam =
+                strs =
                     knam[0] +
                     knam
                         .slice(1)
@@ -75,11 +79,11 @@ const html = computed(() => {
                         .join('');
                 name = firstLower(name);
             } else {
-                knam = knam[0];
+                strs = knam[0];
                 name = humpToLine(name);
             }
             if (knam.includes('-')) {
-                let arr = knam.split('-');
+                let arr = strs.split('-');
                 arr = arr.map((vs, i) => {
                     if (i != 0) {
                         return firstUpper(vs);
@@ -87,14 +91,14 @@ const html = computed(() => {
                         return vs;
                     }
                 });
-                knam = arr.join('');
+                strs = arr.join('');
             }
             tarr.push(
-                '            @' + name + '="' + knam + '"',
+                '            @' + name + '="' + strs + '"',
             );
-            sarr.push('function ' + knam + '(...arr) {');
+            sarr.push('function ' + strs + '(...arr) {');
             sarr.push(
-                "   console.log('" + knam + "', arr)",
+                "   console.log('" + strs + "', arr)",
             );
             sarr.push('}');
         } else {
@@ -133,7 +137,7 @@ const html = computed(() => {
     if (tarr.length > 0) {
         tarr.unshift('');
     }
-    const slots = getSlots(props.slotValue);
+    const slots = getSlots(props.slotValue as ObjStr);
 
     const st = `<!--${props.name}-->
 <template>
@@ -151,8 +155,8 @@ ${sarr.join('\n')}
 
 const isShow = ref(false);
 
-function getSlots(obj) {
-    const arr = [];
+function getSlots(obj: ObjStr) {
+    const arr: string[] = [];
     Object.keys(obj).forEach((key) => {
         const v = obj[key];
         if (v) {
@@ -177,12 +181,13 @@ ${vueFormat(v, '                ')}
 //     }
 // }
 
-function getFunctionBody(v, key) {
-    let text = props.propsText[key];
+function getFunctionBody(v: Function, key: string) {
+    const propsText = props.propsText as ObjStr;
+    const text = propsText[key];
     if (text) {
         return text;
     } else {
-        let st = getFunctionFormat(
+        const st = getFunctionFormat(
             prettierFormat(v.toString()),
         );
         if (st) {
@@ -196,13 +201,9 @@ ${vueFormat(getFunBody(st.body), '   ')}
     }
 }
 
-function setValStringify(v, key) {
-    // if (/^\'(.|\n|\r)*\'$/.test(st)) {
-    //     st = st
-    //         .replace(/^\'/, '"')
-    //         .replace(/\'$/, '"');
-    // }
-    let text = props.propsText[key];
+function setValStringify(v: unknown, key: string) {
+    const propsText = props.propsText as ObjStr;
+    const text = propsText[key];
     if (text) {
         return text;
     } else {

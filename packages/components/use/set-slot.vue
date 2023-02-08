@@ -33,15 +33,18 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref } from 'vue';
 import FSlot from './retrie/slot/index.vue';
+import type { Spec } from '../../utils/index';
+import type { Ref } from 'vue';
 const props = defineProps({
-    list: Array,
+    list: { type: Array<Spec> },
     name: String,
 });
 
-const errors = ref([]);
+const errors: Ref<boolean[]> = ref([]);
 const emit = defineEmits(['change']);
-function setLabel(val) {
+function setLabel(val: Spec) {
     let st =
         val.name +
         ': (' +
@@ -51,7 +54,7 @@ function setLabel(val) {
     return st;
 }
 
-function onChange(arr, obj) {
+function onChange(arr: unknown[], obj: Spec) {
     let name = obj.name || 'default';
     emit('change', name, arr[0]);
 }

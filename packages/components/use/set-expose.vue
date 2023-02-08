@@ -16,11 +16,12 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, computed } from 'vue';
+import type { Spec } from '../../utils/index';
 import FSelect from './retrie/select/index.vue';
 import FExpose from './retrie/expose/index.vue';
-import { nextTick } from 'vue';
 const props = defineProps({
-    list: Array,
+    list: Array<Spec>,
     name: String,
     getRef: {
         type: Function,
@@ -37,8 +38,10 @@ const list = computed(() => {
 
 const curValue = ref({});
 
-function onChange(v, obj) {
-    curValue.value = props.list[v];
+function onChange(v: number) {
+    if (props.list) {
+        curValue.value = props.list[v];
+    }
 }
 </script>
 <style lang="scss"></style>

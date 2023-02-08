@@ -19,6 +19,8 @@
 </template>
 <script lang="ts" setup>
 import { getSonType, isDefaultType } from '../../util';
+import { ref, watch } from 'vue';
+import type { Ref } from 'vue';
 import FForm from '../form/index.vue';
 import FSelect from '../select/index.vue';
 const props = defineProps({
@@ -44,12 +46,15 @@ const props = defineProps({
         type: null,
     },
 });
-const list = ref([]);
+type ListObj = {
+    label: string;
+    prop: string;
+};
+const list: Ref<ListObj[]> = ref([]);
 const config = ref({});
 const emit = defineEmits(['change']);
 const value = ref('');
-
-const defaultList = [
+const defaultList: ListObj[] = [
     {
         label: 'string',
         prop: 'string',
@@ -90,7 +95,7 @@ watch(
     },
 );
 
-function getValueType(valueType) {
+function getValueType(valueType: string) {
     for (
         let index = 0;
         index < list.value.length;
@@ -106,7 +111,10 @@ function getValueType(valueType) {
     }
 }
 
-function setType(type, valueType) {
+function setType(
+    type: string | string[],
+    valueType?: string,
+) {
     let obj = Object.assign({}, props.config);
     if (valueType) {
         const t = getValueType(valueType);
@@ -123,7 +131,8 @@ function setType(type, valueType) {
 
 function setValue() {
     let arr = [];
-    const dataType = props.config.dataType || [];
+    const dataType = (props.config.dataType ||
+        []) as string[];
     if (dataType && dataType.length > 1) {
         arr = dataType.map((type) => {
             return {
@@ -150,11 +159,11 @@ function setValue() {
     value.value = props.modelValue;
 }
 
-function onChangeSelect(v) {
+function onChangeSelect(v: string | string[]) {
     setType(v);
     value.value = '';
 }
-function onChange(...arr) {
+function onChange(...arr: unknown[]) {
     emit('change', ...arr);
 }
 </script>

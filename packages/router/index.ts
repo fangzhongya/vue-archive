@@ -9,6 +9,7 @@ import type {
     TestsObj,
     ComponentsObj,
 } from '../utils/common';
+import { ObjUnk } from '../config';
 const routes: RouteRecordRaw[] = [
     {
         path: '/__document',
@@ -114,12 +115,10 @@ export function init(router: Router) {
 }
 
 type ToPush = 'replace' | 'push';
-const toPageParam = {} as {
-    [key: string]: any;
-};
+const toPageParam = {} as { [key: string]: ObjUnk };
 export function getPageParams(
     route: RouteLocationNormalizedLoaded,
-) {
+): ObjUnk {
     let path = route.path;
     let params = route.params;
     if (params && Object.keys(params).length) {
@@ -132,7 +131,9 @@ export function getPageParams(
             if (state == 3) {
                 return {};
             } else {
-                return getSession('router.toPage.' + path);
+                return getSession(
+                    'router.toPage.' + path,
+                ) as ObjUnk;
             }
         }
     }
@@ -141,8 +142,8 @@ export function getPageParams(
 interface PushObj {
     path?: string;
     name?: string;
-    params?: any;
-    query?: any;
+    params?: ObjUnk;
+    query?: ObjUnk;
 }
 
 export function toPage(

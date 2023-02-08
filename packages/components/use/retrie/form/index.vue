@@ -122,6 +122,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { ref } from 'vue';
 import FFunction from '../function/index.vue';
 import FObject from '../object/index.vue';
 import FArray from '../array/index.vue';
@@ -131,6 +132,7 @@ import FBoolean from '../boolean/index.vue';
 import FString from '../string/index.vue';
 import FNumber from '../number/index.vue';
 import FOther from '../other/index.vue';
+import type { ObjUnk } from '../../../../config';
 const props = defineProps({
     /**
      * @props { Object } selects 选择数据集合
@@ -157,7 +159,7 @@ const props = defineProps({
 const isErr = ref(false);
 const emit = defineEmits(['change']);
 
-function setSelect(v, ...arr) {
+function setSelect(v: ObjUnk, ...arr: unknown[]) {
     if (v) {
         if (typeof v.select == 'string') {
             return props.selects[v.select];
@@ -171,12 +173,12 @@ function setSelect(v, ...arr) {
     }
 }
 
-function onValue(value, text) {
-    const prop = props.config?.prop;
+function onValue(value: unknown, text: string) {
+    const prop = props.config?.prop as string;
     emit('change', prop, value, text);
 }
 
-function onError(v) {
+function onError(v: boolean) {
     isErr.value = v;
 }
 </script>

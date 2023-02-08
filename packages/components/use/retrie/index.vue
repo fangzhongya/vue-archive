@@ -15,7 +15,7 @@
                     :config="item"
                     :selects="props.selects"
                     :modelValue="
-                        props.modelValue[item.prop]
+                        props.modelValue[item.prop as string]
                     "
                     @change="onChange"
                 ></FAny>
@@ -25,7 +25,7 @@
                     :config="item"
                     :selects="props.selects"
                     :modelValue="
-                        props.modelValue[item.prop]
+                        props.modelValue[item.prop as string]
                     "
                     @change="onChange"
                 ></FForm>
@@ -41,7 +41,9 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { nextTick } from 'vue';
+import { nextTick, ref, watch } from 'vue';
+import type { Ref } from 'vue';
+import type { ObjStr, ObjUnk } from '../../../config';
 import FAny from './any/index.vue';
 import FForm from './form/index.vue';
 const props = defineProps({
@@ -59,7 +61,7 @@ const props = defineProps({
      * @props { Object } config 默认展示数据
      */
     list: {
-        type: Array,
+        type: Array<ObjUnk>,
         default() {
             return [];
         },
@@ -93,9 +95,11 @@ const props = defineProps({
  */
 const emit = defineEmits(['query']);
 
-const value = ref({});
-const valueText = ref({});
-function onChange(prop, v, text) {
+const value: Ref<{
+    [key: string]: unknown;
+}> = ref({});
+const valueText: Ref<ObjStr> = ref({});
+function onChange(prop: string, v: unknown, text: string) {
     value.value[prop] = v;
     valueText.value[prop] = text;
 }
