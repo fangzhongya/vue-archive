@@ -24,7 +24,7 @@
     "packages/**/*.ts",
     "packages/**/*.vue",
     "archive.config.ts",
-    "node.vue.index.ts",
+    "node.vue.ts",
     "node.tests.ts",
   ],
   "references": [
