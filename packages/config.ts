@@ -47,7 +47,7 @@ export interface ExampleObj {
      * 2 : 二级 aliass 目录
      * 3 : dir 名称开始 加上二级 aliass 目录
      */
-    level: string | number;
+    level?: string | number;
 
     /**
      * 0 : 不支持别名
@@ -56,7 +56,7 @@ export interface ExampleObj {
      * 3 : 只支持一级别名+二级别名
      * 9 : 都支持
      */
-    aliaslevel: string | number;
+    aliaslevel?: string | number;
 
     /**
      * 不区分首字母大小写
@@ -64,7 +64,7 @@ export interface ExampleObj {
      * 1 : 只支持 elInput
      * 2 : 都支持
      */
-    componentName: string | number;
+    componentName?: string | number;
     examples?: GlobComs;
     examplesRaw?: Globs;
     md?: string;

@@ -321,12 +321,12 @@ function getTestObj(key: string) {
     } else {
         const exa = exampleObj[com.dir];
         const topurl =
-            exa.dir + getLevelUrl(exa.level, com);
+            exa.dir + getLevelUrl(exa.level || 0, com);
 
         const mlurl = getAliaslevelUrl(
-            exa.aliaslevel,
+            exa.aliaslevel || 0,
             com,
-            exa.componentName,
+            exa.componentName || 0,
         );
         com.mds = getTestMd(topurl, mlurl, exa, com);
 
