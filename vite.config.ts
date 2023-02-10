@@ -56,13 +56,6 @@ export default defineConfig({
             entry: './packages/index.ts',
             formats: ['es', 'cjs'],
         },
-        // 打包去掉日志与断点
-        terserOptions: {
-            compress: {
-                drop_console: true,
-                drop_debugger: true,
-            },
-        },
     },
     resolve: {
         alias: {

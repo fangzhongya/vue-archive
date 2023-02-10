@@ -5,6 +5,7 @@ import router from './router';
 
 const app = createApp(App);
 if (process.env.NODE_ENV == 'development') {
+    await import('../archive.config');
     const documentPlugins = await import('../packages');
     app.use(documentPlugins.default, router);
 }
