@@ -34,6 +34,7 @@ export interface Resolver extends Component {
 export interface Components extends Component {
     resolver?: Resolver;
     comprops?: string;
+    curprops?: string;
     components: GlobComs;
     componentsRaw: Globs;
     example?: ExampleObj;

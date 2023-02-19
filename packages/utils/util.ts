@@ -15,8 +15,11 @@ import { asyncMergeArray } from '@fangzhongya/utils/basic/array/asyncMergeArray'
 
 import { firstUpper } from '@fangzhongya/utils/basic/string/firstUpper';
 
+import { getSuffix } from '@fangzhongya/utils/urls/getSuffix';
+
 export {
     mergeObject,
+    getSuffix,
     toggleArray,
     humpToLine,
     asyncMergeArray,

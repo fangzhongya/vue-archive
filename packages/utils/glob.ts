@@ -5,6 +5,7 @@ import type { AsyncComponentLoader } from 'vue';
 import {
     getComponentsArr,
     isComprops,
+    isCurprops,
     defaultExtensions,
 } from './common';
 import type {
@@ -25,6 +26,7 @@ import {
     humpToLine,
     lineToLargeHump,
     firstLower,
+    getSuffix,
     duplicateRemoval,
     asyncMergeArray,
 } from './util';
@@ -132,6 +134,8 @@ function getImport(text: string, type = 'vue') {
             jstext = zz[3];
         }
     } else if (type == 'js') {
+        jstext = text;
+    } else if (type == 'ts') {
         jstext = text;
     }
     if (jstext) {
@@ -300,6 +304,7 @@ function getTestMd(
                 arr.push({
                     topurl: topurl,
                     comkey: com.key,
+                    suffix: getSuffix(key),
                     name: com.name,
                     value: comName,
                     key: key,
@@ -359,6 +364,7 @@ function getTestObj(key: string) {
                         topurl: topurl,
                         name: bname,
                         value: value,
+                        suffix: getSuffix(key),
                         comname: com.name,
                         comkey: com.key,
                         key: key,
@@ -426,18 +432,19 @@ export function getTestImportUrl(
     let arr = getImport(text, type) || [];
     let urs = url.split('/');
     return arr.map((key) => {
-        let r = /\.([a-z]+)$/g;
+        let r = /\.([a-z|A-Z]+)$/g;
         if (key.startsWith('./')) {
             let head = urs
                 .slice(0, urs.length - 1)
                 .join('/');
             let v = key.substring(2);
             if (!r.test(v)) {
-                key = key + '.js';
+                key = key + '.' + type;
             }
             return {
                 name: key,
                 value: v,
+                suffix: getSuffix(key),
                 head,
                 key: head + '/' + v,
             };
@@ -461,11 +468,12 @@ export function getTestImportUrl(
                 .join('/');
             let v = vs.join('/');
             if (!r.test(v)) {
-                key = key + '.js';
+                key = key + '.' + type;
             }
             return {
                 name: key,
                 value: v,
+                suffix: getSuffix(key),
                 head,
                 key: head + '/' + v,
             };
@@ -482,6 +490,7 @@ export function getLocalTextArr(
                 return {
                     raw: '',
                     value: o.value,
+                    suffix: getSuffix(o.key),
                     key: o.key,
                     getRaw: examplesRawObj[o.key],
                 };
@@ -641,7 +650,7 @@ async function getPropsImport(text: string, obj: PropObj) {
         let arr = getTestImportUrl(
             obj.key,
             text,
-            'js',
+            obj.suffix,
         ).filter((v) => {
             return v.key.startsWith(obj.head);
         });
@@ -703,11 +712,14 @@ async function getComponentsProps(
             let arr = getTestImportUrl(
                 obj.key,
                 text,
-                'vue',
+                obj.suffix,
             ).filter((v) => {
-                return isComprops(
-                    v.name,
-                    obj.comprops || '',
+                return (
+                    isComprops(
+                        v.name,
+                        obj.comprops || '',
+                    ) ||
+                    isCurprops(v.name, obj.curprops || '')
                 );
             });
             let str = await getPropsTexts(arr);

@@ -2,6 +2,7 @@ import { setSession, getSession } from './storage';
 import type { AsyncComponentLoader } from 'vue';
 import {
     humpToLine,
+    getSuffix,
     appearNum,
     lineToLargeHump,
 } from './util';
@@ -37,6 +38,7 @@ export function isUrlsMatchistarts(
 export interface TextObj {
     // 组件文件名称
     value: string;
+    suffix: string;
     // 唯一文件地址key
     key: string;
     // 文件内容
@@ -48,12 +50,14 @@ export interface TextObj {
 export interface PropObj {
     name: string;
     value: string;
+    suffix: string;
     head: string;
     key: string;
 }
 
 export interface PropsObj extends TextObj {
     comprops: string;
+    curprops: string;
     dir: string;
     tdir: string;
     key: string;
@@ -90,6 +94,7 @@ export interface ComponentsObj extends Component, TextObj {
     adir: string;
     aliasNames: Array<string>;
     component?: AsyncComponentLoader;
+    curprops?: string;
     comprops?: string;
     tests:
         | {
@@ -194,6 +199,7 @@ export function getUrlName(
             let value = ms[1];
             let rsobj: ComponentsObj = {
                 dir: '',
+                suffix: getSuffix(url),
                 name: lineToLargeHump(value),
                 value,
                 key: '',
@@ -234,8 +240,21 @@ function getTDir(key: string) {
 }
 
 export function isComprops(url: string, comprops: string) {
-    const reg = new RegExp(comprops + '.+\\.js$');
-    return reg.test(url);
+    if (comprops) {
+        const reg = new RegExp(comprops + '.+\\.(js|ts)$');
+        return reg.test(url);
+    } else {
+        return false;
+    }
+}
+
+export function isCurprops(url: string, comprops: string) {
+    if (comprops) {
+        const reg = new RegExp(comprops + '.+\\.(js|ts)$');
+        return reg.test(url);
+    } else {
+        return false;
+    }
 }
 
 export interface ComponentsObjs {
@@ -262,13 +281,17 @@ export function getComponentsArr(
         const reg = new RegExp('^' + v.dir);
         let k = key.replace(reg, '');
         if (
-            config.comprops &&
-            isComprops(k, config.comprops)
+            (config.comprops &&
+                isComprops(k, config.comprops)) ||
+            (config.curprops &&
+                isCurprops(k, config.curprops))
         ) {
             let value = {} as PropsObj;
-            value.comprops = config.comprops;
-            value.value = config.comprops;
+            value.comprops = config.comprops || '';
+            value.curprops = config.curprops || '';
+            value.value = k;
             value.dir = v.dir;
+            value.suffix = getSuffix(key);
             value.tdir = tdir;
             value.key = key;
             value.raw = '';
@@ -283,6 +306,7 @@ export function getComponentsArr(
             );
             if (value) {
                 value.comprops = config.comprops;
+                value.curprops = config.curprops;
                 value.dir = v.dir;
                 value.tdir = tdir;
                 value.key = key;

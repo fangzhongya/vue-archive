@@ -26,6 +26,7 @@
     "archive.config.ts",
     "node.vue.ts",
     "node.tests.ts",
+    "node.version.ts",
   ],
   "references": [
     {

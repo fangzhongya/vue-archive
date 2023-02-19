@@ -11,10 +11,10 @@
 
 <script lang="ts">
 import 'highlight.js/styles/stackoverflow-light.css';
-import hljs from 'highlight.js/lib/common';
+import 'highlight.js/lib/common';
 import hljsVuePlugin from '@highlightjs/vue-plugin';
-
-export default {
+import { defineComponent } from 'vue';
+export default defineComponent({
     props: {
         language: {
             type: String,
@@ -26,5 +26,5 @@ export default {
     components: {
         highlightjs: hljsVuePlugin.component,
     },
-};
+});
 </script>
