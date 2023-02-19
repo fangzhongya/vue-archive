@@ -432,15 +432,11 @@ export function getTestImportUrl(
     let arr = getImport(text, type) || [];
     let urs = url.split('/');
     return arr.map((key) => {
-        let r = /\.([a-z|A-Z]+)$/g;
         if (key.startsWith('./')) {
             let head = urs
                 .slice(0, urs.length - 1)
                 .join('/');
             let v = key.substring(2);
-            if (!r.test(v)) {
-                key = key + '.' + type;
-            }
             return {
                 name: key,
                 value: v,
@@ -467,9 +463,6 @@ export function getTestImportUrl(
                 .slice(0, urs.length - z - 1)
                 .join('/');
             let v = vs.join('/');
-            if (!r.test(v)) {
-                key = key + '.' + type;
-            }
             return {
                 name: key,
                 value: v,
@@ -665,7 +658,11 @@ function getPropsRaws(
     return new Promise((resolve) => {
         if (arr && arr.length > 0) {
             let arrs = arr.map((o) => {
-                return componentPropsObj[o.key];
+                return (
+                    componentPropsObj[o.key] ||
+                    componentPropsObj[o.key + '.js'] ||
+                    componentPropsObj[o.key + '.ts']
+                );
             });
             asyncMergeArray(
                 arrs,
@@ -708,7 +705,7 @@ async function getComponentsProps(
 ) {
     let ts = text;
     if (text) {
-        if (obj.comprops) {
+        if (obj.comprops || obj.curprops) {
             let arr = getTestImportUrl(
                 obj.key,
                 text,

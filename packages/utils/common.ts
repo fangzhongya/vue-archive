@@ -241,7 +241,9 @@ function getTDir(key: string) {
 
 export function isComprops(url: string, comprops: string) {
     if (comprops) {
-        const reg = new RegExp(comprops + '.+\\.(js|ts)$');
+        const reg = new RegExp(
+            comprops + '.+(\\.(js|ts))?$',
+        );
         return reg.test(url);
     } else {
         return false;
@@ -250,7 +252,9 @@ export function isComprops(url: string, comprops: string) {
 
 export function isCurprops(url: string, comprops: string) {
     if (comprops) {
-        const reg = new RegExp(comprops + '.+\\.(js|ts)$');
+        const reg = new RegExp(
+            '/' + comprops + '(\\.(js|ts))?$',
+        );
         return reg.test(url);
     } else {
         return false;
