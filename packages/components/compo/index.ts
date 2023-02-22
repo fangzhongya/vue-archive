@@ -230,7 +230,7 @@ function addObj(value: SpecObjs, type: string) {
     const ms = notesObj[type + 'name'] || [];
     const name =
         (value.name as unknown as string) ??
-        value.props.name;
+        value[type]?.name;
 
     const nis = ms.indexOf(name);
     if (nis >= 0) {
