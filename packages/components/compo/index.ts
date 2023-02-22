@@ -14,7 +14,22 @@ interface ArrFi {
     key: string;
     value: Specs;
 }
+type NotesObj = {
+    titles: SpecObjs[];
+    propss: SpecObjs[];
+    slots: SpecObjs[];
+    emitss: SpecObjs[];
+    exposes: SpecObjs[];
+    [key: string]: any[];
+};
 
+const notesObj: NotesObj = {
+    titles: [],
+    propss: [],
+    slots: [],
+    emitss: [],
+    exposes: [],
+};
 function getDefault(ss: string, iss?: boolean) {
     let c = ss.charAt(0);
     let css = [
@@ -90,7 +105,6 @@ function getObj(v: Spec) {
     return v;
 }
 
-let titles: SpecObjs[] = [];
 function setTitle(obj: Block) {
     let title = '';
     let name = '';
@@ -117,10 +131,9 @@ function setTitle(obj: Block) {
     });
 }
 function addTitles(value: SpecObjs) {
-    titles.push(value);
+    notesObj.titles.push(value);
 }
 
-let propss: SpecObjs[] = [];
 function setProps(obj: Block) {
     let name = ''; //属性名
     let type = ''; //类型
@@ -141,14 +154,10 @@ function setProps(obj: Block) {
     arr.forEach((key) => {
         value[key] = fobj.obj[key];
     });
-    addProps(value);
+    addObj(value, 'props');
     fobj.arr.forEach((o) => {
         addTags(o.key, o.value as SpecObjs);
     });
-}
-function addProps(value: SpecObjs) {
-    // propss.push(value);
-    propss = replaceAfter(propss, value, 'name');
 }
 
 let slots: SpecObjs[] = [];
@@ -168,14 +177,10 @@ function setSlot(obj: Block) {
     arr.forEach((key) => {
         value[key] = fobj.obj[key];
     });
-    addSlots(value);
+    addObj(value, 'slot');
     fobj.arr.forEach((o) => {
         addTags(o.key, o.value as SpecObjs);
     });
-}
-function addSlots(value: SpecObjs) {
-    // slots.push(value);
-    slots = replaceAfter(slots, value, 'name');
 }
 
 let emitss: SpecObjs[] = [];
@@ -195,14 +200,10 @@ function setEmits(obj: Block) {
     arr.forEach((key) => {
         value[key] = fobj.obj[key];
     });
-    addEmits(value);
+    addObj(value, 'emits');
     fobj.arr.forEach((o) => {
         addTags(o.key, o.value as SpecObjs);
     });
-}
-function addEmits(value: SpecObjs) {
-    // emitss.push(value);
-    emitss = replaceAfter(emitss, value, 'name');
 }
 
 let exposes: SpecObjs[] = [];
@@ -220,14 +221,28 @@ function setExpose(obj: Block) {
     arr.forEach((key) => {
         value[key] = fobj.obj[key];
     });
-    addExpose(value);
+    addObj(value, 'expose');
     fobj.arr.forEach((o) => {
         addTags(o.key, o.value as SpecObjs);
     });
 }
-function addExpose(value: SpecObjs) {
-    // exposes.push(value);
-    exposes = replaceAfter(exposes, value, 'name');
+function addObj(value: SpecObjs, type: string) {
+    const ms = notesObj[type + 'name'] || [];
+    const name =
+        (value.name as unknown as string) ??
+        value.props.name;
+
+    if (!ms.includes(name)) {
+        notesObj[type + 's'].push(value);
+        ms.push(name);
+        notesObj[type + 'name'] = ms;
+    }
+}
+
+function init() {
+    Object.keys(notesObj).forEach((key) => {
+        notesObj[key] = [];
+    });
 }
 
 function getFilter(obj: Block, arrs?: Array<string>) {
@@ -265,16 +280,16 @@ function addTags(tag: string, obj: SpecObjs) {
             addTitles(obj);
             return true;
         case 'props':
-            addProps(obj);
+            addObj(obj, 'props');
             return true;
         case 'slot':
-            addSlots(obj);
+            addObj(obj, 'slot');
             return true;
         case 'emits':
-            addEmits(obj);
+            addObj(obj, 'emits');
             return true;
         case 'expose':
-            addExpose(obj);
+            addObj(obj, 'expose');
             return true;
         default:
             return false;
@@ -302,20 +317,8 @@ function setTags(tag: string, obj: Block) {
     }
 }
 
-type NotesObj = {
-    titles: SpecObjs[];
-    propss: SpecObjs[];
-    slots: SpecObjs[];
-    emitss: SpecObjs[];
-    exposes: SpecObjs[];
-};
-
 function notesFilter(notes?: Block[]): NotesObj {
-    titles = [];
-    propss = [];
-    slots = [];
-    emitss = [];
-    exposes = [];
+    init();
     notes?.forEach((obj) => {
         let tags = obj?.tags || [];
         let lg = tags?.length || 0;
@@ -329,13 +332,7 @@ function notesFilter(notes?: Block[]): NotesObj {
             }
         }
     });
-    return {
-        titles,
-        propss,
-        slots,
-        emitss,
-        exposes,
-    };
+    return notesObj;
 }
 
 export function getNotes(key: string): Promise<NotesObj> {

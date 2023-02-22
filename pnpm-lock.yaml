@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@fangzhongya/create': 0.2.3-8
   '@fangzhongya/utils': 0.0.7-18
-  '@fangzhongya/vue-components': 0.1.3-8
+  '@fangzhongya/vue-components': 0.1.3-9
   '@highlightjs/vue-plugin': ^2.1.0
   '@types/node': ^18.14.0
   '@vitejs/plugin-vue': ^4.0.0
@@ -27,7 +27,7 @@ specifiers:
 devDependencies:
   '@fangzhongya/create': 0.2.3-8
   '@fangzhongya/utils': 0.0.7-18
-  '@fangzhongya/vue-components': 0.1.3-8
+  '@fangzhongya/vue-components': 0.1.3-9
   '@highlightjs/vue-plugin': 2.1.0_jsvakxz56e7tk77soxhxnrhzhm
   '@types/node': 18.14.0
   '@vitejs/plugin-vue': 4.0.0_vite@4.1.4+vue@3.2.47
@@ -666,8 +666,8 @@ packages:
     resolution: {integrity: sha512-xzo67ml9e/NoeHd0CdGq2oR9IJcyk9rxzcnQCHjEqffRnR1A9R7Pr4mv9+x5npiiwvGD/MPtU87gCr57biU0LQ==}
     dev: true
 
-  /@fangzhongya/vue-components/0.1.3-8:
-    resolution: {integrity: sha512-TeCvB/cziFsBYBP6vmxYds2Nhu+oiSiCf0Kd1PJ4xBtrb572sG6b5QTKh4gUeavGVHYQiFA+JKZuRB3Pm0GdPA==}
+  /@fangzhongya/vue-components/0.1.3-9:
+    resolution: {integrity: sha512-zYb319rswZNOKginVf9TnkXJqL6WMCtDz5QMETvJhPb/R/uEsCB2QmfKVaRaAgKHC86CImRhbOl38iK8hKvMoQ==}
     dependencies:
       fast-glob: 3.2.12
     dev: true
