@@ -232,11 +232,14 @@ function addObj(value: SpecObjs, type: string) {
         (value.name as unknown as string) ??
         value.props.name;
 
-    if (!ms.includes(name)) {
-        notesObj[type + 's'].push(value);
-        ms.push(name);
-        notesObj[type + 'name'] = ms;
+    const nis = ms.indexOf(name);
+    if (nis >= 0) {
+        notesObj[type + 's'].splice(nis, 1);
+        ms.splice(nis, 1);
     }
+    notesObj[type + 's'].push(value);
+    ms.push(name);
+    notesObj[type + 'name'] = ms;
 }
 
 function init() {
