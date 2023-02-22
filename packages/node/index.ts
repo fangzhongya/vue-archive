@@ -1,6 +1,7 @@
 import { userConfig } from '../config';
 import type { Config } from '../config';
 import type { SpecObjs } from '../utils/index';
+import { prettierHtml } from '../components/use/util';
 import { join } from 'node:path';
 import type {
     ComponentsObj,
@@ -169,7 +170,7 @@ function setTestUrl(obj: ComponentsObj, test: TestsObj) {
 function setDom(dom: string) {
     const arr: string[] = [];
     // arr.push('```html');
-    arr.push(dom);
+    arr.push(prettierHtml(dom));
     // arr.push('```');
     return arr;
 }
@@ -231,13 +232,16 @@ function setValue(
     index: number,
     key: number,
 ) {
+    let v;
     if (item.formatter) {
-        return item.formatter(data, item, index, key);
+        v = item.formatter(data, item, index, key);
     } else if (item.prop) {
-        return data[item.prop];
+        v = data[item.prop];
     } else {
-        return '';
+        v = '';
     }
+    v = v.toString();
+    return v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function getlistDom(
@@ -248,7 +252,9 @@ function getlistDom(
     const arrs: string[] = [];
     const ths: string[] = [];
     list.forEach((item) => {
-        ths.push(setHtml('th', {}, [item?.label]));
+        let v = item?.label || '';
+        v = v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        ths.push(setHtml('th', {}, [v]));
     });
 
     let trli: string[];
