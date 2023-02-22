@@ -7,6 +7,7 @@ import {
     isComprops,
     isCurprops,
     defaultExtensions,
+    getRawValue,
 } from './common';
 import type {
     PropsObj,
@@ -100,17 +101,36 @@ function setExampleObj(
             examplesObj[key] = examples[key];
         });
     }
-    obj.exampless = arr;
-    obj.examples = undefined;
 
     const arrraw: Array<string> = [];
-    const examplesRaw = obj.examplesRaw;
-    if (examplesRaw) {
-        Object.keys(examplesRaw).forEach((key) => {
+    if (obj.urls) {
+        obj.exampless = obj.urls;
+        obj.urls.forEach((key) => {
             arrraw.push(key);
-            examplesRawObj[key] = examplesRaw[key];
+            if (obj.examplesRaw) {
+                examplesRawObj[key] = getRawValue(
+                    obj.examplesRaw,
+                    key,
+                );
+            }
         });
+    } else {
+        obj.exampless = arr;
+        const examplesRaw = obj.examplesRaw;
+        if (examplesRaw) {
+            Object.keys(examplesRaw).forEach((key) => {
+                arrraw.push(key);
+                if (obj.examplesRaw) {
+                    examplesRawObj[key] = getRawValue(
+                        obj.examplesRaw,
+                        key,
+                    );
+                }
+            });
+        }
     }
+    obj.examples = undefined;
+
     obj.examplessRaw = arrraw;
     obj.examplesRaw = undefined;
 
@@ -123,7 +143,7 @@ function setExampleObj(
  * @param {*} type 文件类型
  * @returns
  */
-function getImport(text: string, type = 'vue') {
+async function getImport(text: string, type = 'vue') {
     let jstext = '';
     if (type == 'vue') {
         const reg = new RegExp(
@@ -139,7 +159,7 @@ function getImport(text: string, type = 'vue') {
         jstext = text;
     }
     if (jstext) {
-        const importss = getTextImport(jstext);
+        const importss = await getTextImport(jstext);
         let arr = importss?.map((o) => o.n);
         const yrs: Array<string> = [];
         if (arr && arr.length > 0) {
@@ -171,7 +191,7 @@ export function getLocalTextTests(
             if (obj.raw) {
                 resolve(obj.raw);
             } else if (obj.getRaw) {
-                obj.getRaw().then((s) => {
+                obj.getRaw(obj).then((s) => {
                     const m = (s || '') + '';
                     obj.raw = m;
                     obj.getRaw = null;
@@ -309,7 +329,10 @@ function getTestMd(
                     value: comName,
                     key: key,
                     raw: '',
-                    getRaw: examplesRawObj[key],
+                    getRaw: getRawValue(
+                        examplesRawObj,
+                        key,
+                    ),
                 });
                 break;
             }
@@ -370,7 +393,10 @@ function getTestObj(key: string) {
                         key: key,
                         component: examplesObj[key],
                         raw: '',
-                        getRaw: examplesRawObj[key],
+                        getRaw: getRawValue(
+                            examplesRawObj,
+                            key,
+                        ),
                     };
                     break;
                 }
@@ -424,12 +450,12 @@ export function getKeyMds(key: string) {
  * @param {*} arr
  * @returns
  */
-export function getTestImportUrl(
+export async function getTestImportUrl(
     url: string,
     text: string,
     type: string,
-): Array<PropObj> {
-    let arr = getImport(text, type) || [];
+): Promise<Array<PropObj>> {
+    let arr = (await getImport(text, type)) || [];
     let urs = url.split('/');
     return arr.map((key) => {
         if (key.startsWith('./')) {
@@ -485,7 +511,10 @@ export function getLocalTextArr(
                     value: o.value,
                     suffix: getSuffix(o.key),
                     key: o.key,
-                    getRaw: examplesRawObj[o.key],
+                    getRaw: getRawValue(
+                        examplesRawObj,
+                        o.key,
+                    ),
                 };
             });
             asyncMergeArray(
@@ -494,7 +523,7 @@ export function getLocalTextArr(
                     if (value.raw) {
                         res();
                     } else if (value.getRaw) {
-                        value.getRaw().then((s) => {
+                        value.getRaw(value).then((s) => {
                             const m = (s || '') + '';
                             value.raw = m;
                             value.getRaw = null;
@@ -526,7 +555,6 @@ function getComponents() {
         let dir = v.dir || v?.resolver?.dir || '';
         setExampleObj(dir, example, v.example);
     });
-    console.log('componentsObj', componentsObj);
 }
 
 export const defaultName = 'default';
@@ -582,8 +610,9 @@ function setForComponentsValue(v: Components) {
         );
     } else {
         alias = v.alias || defaultName;
+        let urls = v?.urls || Object.keys(v.componentsRaw);
         obj = getComponentsArr(
-            Object.keys(v.componentsRaw),
+            urls,
             v,
             v.componentsRaw,
             v.components,
@@ -640,10 +669,12 @@ export function getCompoName(
 async function getPropsImport(text: string, obj: PropObj) {
     let ts = text;
     if (text) {
-        let arr = getTestImportUrl(
-            obj.key,
-            text,
-            obj.suffix,
+        let arr = (
+            await getTestImportUrl(
+                obj.key,
+                text,
+                obj.suffix,
+            )
         ).filter((v) => {
             return v.key.startsWith(obj.head);
         });
@@ -670,16 +701,19 @@ function getPropsRaws(
                     if (value.raw) {
                         res();
                     } else if (value.getRaw) {
-                        value.getRaw().then(async (s) => {
-                            const m = (s || '') + '';
-                            let ts = await getPropsImport(
-                                m,
-                                arr[index],
-                            );
-                            value.raw = ts;
-                            value.getRaw = null;
-                            res();
-                        });
+                        value
+                            .getRaw(value)
+                            .then(async (s) => {
+                                const m = (s || '') + '';
+                                let ts =
+                                    await getPropsImport(
+                                        m,
+                                        arr[index],
+                                    );
+                                value.raw = ts;
+                                value.getRaw = null;
+                                res();
+                            });
                     } else {
                         res();
                     }
@@ -706,10 +740,12 @@ async function getComponentsProps(
     let ts = text;
     if (text) {
         if (obj.comprops || obj.curprops) {
-            let arr = getTestImportUrl(
-                obj.key,
-                text,
-                obj.suffix,
+            let arr = (
+                await getTestImportUrl(
+                    obj.key,
+                    text,
+                    obj.suffix,
+                )
             ).filter((v) => {
                 return (
                     isComprops(
@@ -738,7 +774,7 @@ export function getLocalTextComponents(
                     resolve(componentObj.raw);
                 } else if (componentObj.getRaw) {
                     componentObj
-                        .getRaw()
+                        .getRaw(componentObj)
                         .then(async (s) => {
                             const m = (s || '') + '';
                             const text =

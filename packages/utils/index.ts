@@ -1,6 +1,10 @@
 import { parse as commentParserParse } from 'comment-parser';
 
-import { parse as esModuleLexerParse } from 'es-module-lexer';
+import {
+    init as esModuleLexerInit,
+    parse as esModuleLexerParse,
+    type ImportSpecifier,
+} from 'es-module-lexer';
 
 export type Spec = {
     tag: string;
@@ -37,9 +41,14 @@ export function getTextNotes(text: string) {
         return commentParserParse(text) as Block[];
     }
 }
-export function getTextImport(jstext: string) {
-    const [importss] = esModuleLexerParse(jstext);
-    return importss;
+export function getTextImport(
+    jstext: string,
+): Promise<readonly ImportSpecifier[]> {
+    return new Promise(async (resolve) => {
+        await esModuleLexerInit;
+        const [importss] = esModuleLexerParse(jstext);
+        resolve(importss);
+    });
 }
 export function copyCode(text: string) {
     navigator.clipboard.writeText(text);

@@ -8,9 +8,9 @@ export interface ObjStr {
 export interface ObjUnk {
     [key: string]: unknown;
 }
-export type GetRaw = () => Promise<unknown>;
+export type GetRaw = (v: any) => Promise<unknown>;
 
-export type Globs = Record<string, () => Promise<unknown>>;
+export type Globs = Record<string, GetRaw> | GetRaw;
 
 export interface GlobComs {
     [key: string]: AsyncComponentLoader;
@@ -33,6 +33,7 @@ export interface Resolver extends Component {
 
 export interface Components extends Component {
     resolver?: Resolver;
+    urls?: string[];
     comprops?: string;
     curprops?: string;
     components: GlobComs;
@@ -67,6 +68,7 @@ export interface ExampleObj {
      */
     componentName?: string | number;
     examples?: GlobComs;
+    urls?: string[];
     examplesRaw?: Globs;
     md?: string;
 }

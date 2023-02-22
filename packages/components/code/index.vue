@@ -115,14 +115,15 @@ function getData() {
     file.value = undefined;
     vshow.value = false;
     if (props.text) {
-        let arr = getTestImportUrl(
+        getTestImportUrl(
             props.value?.key,
             props.text,
             'vue',
-        );
-        getLocalTextArr(arr).then((v) => {
-            files.value = v.filter((o) => {
-                return o.raw;
+        ).then((arr) => {
+            getLocalTextArr(arr).then((v) => {
+                files.value = v.filter((o) => {
+                    return o.raw;
+                });
             });
         });
     }

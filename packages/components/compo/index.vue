@@ -86,12 +86,7 @@ import Md from '../md/index.vue';
 import Top from './top';
 import FTable from './ftable.vue';
 import { ref, watch, reactive } from 'vue';
-import {
-    props as fprops,
-    emits as femits,
-    expose as fexpose,
-    slot as fslot,
-} from '../../utils/props';
+import { tprops, temits, texpose, tslot } from './index';
 import { getNotes, getKeyMds } from './index';
 import type { FTableList } from './index';
 import type { MdObj } from '../../utils/common';
@@ -110,93 +105,9 @@ const iss = reactive({
     top: true,
 });
 const vprops: Ref<SpecObjs[]> = ref([]);
-const tprops: FTableList[] = [
-    {
-        label: '属性名',
-        prop: 'name',
-        formatter: fprops.name,
-    },
-    {
-        label: '说明',
-        prop: 'description',
-        formatter: fprops.description,
-    },
-    {
-        label: '类型',
-        prop: 'type',
-        formatter: fprops.type,
-    },
-    {
-        label: '可选值',
-        prop: 'selectable',
-        formatter: fprops.selectable,
-    },
-    {
-        label: '默认值',
-        prop: 'default',
-        formatter: fprops.default,
-    },
-];
 const vemits: Ref<SpecObjs[]> = ref([]);
-const temits: FTableList[] = [
-    {
-        label: '事件名',
-        prop: 'name',
-        formatter: femits.name,
-    },
-    {
-        label: '说明',
-        prop: 'description',
-        formatter: femits.description,
-    },
-    {
-        label: '回调参数',
-        prop: 'selectable',
-        formatter: femits.selectable,
-    },
-];
 const vexpose: Ref<SpecObjs[]> = ref([]);
-const texpose: FTableList[] = [
-    {
-        label: '方法名',
-        prop: 'name',
-        formatter: fexpose.name,
-    },
-    {
-        label: '说明',
-        prop: 'description',
-        formatter: fexpose.description,
-    },
-    {
-        label: '参数',
-        prop: 'selectable',
-        formatter: fexpose.selectable,
-    },
-    {
-        label: '返回值',
-        prop: 'type',
-        formatter: fexpose.type,
-    },
-];
-
 const vslot: Ref<SpecObjs[]> = ref([]);
-const tslot: FTableList[] = [
-    {
-        label: '插槽名',
-        prop: 'name',
-        formatter: fslot.name,
-    },
-    {
-        label: '说明',
-        prop: 'description',
-        formatter: fslot.description,
-    },
-    {
-        label: '作用域参数',
-        prop: 'selectable',
-        formatter: fslot.selectable,
-    },
-];
 
 const mds: Ref<MdObj[]> = ref([]);
 

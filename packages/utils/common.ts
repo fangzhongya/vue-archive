@@ -299,7 +299,7 @@ export function getComponentsArr(
             value.tdir = tdir;
             value.key = key;
             value.raw = '';
-            value.getRaw = comRaw[key];
+            value.getRaw = getRawValue(comRaw, key);
             props.push(value);
         } else {
             let value = getUrlName(
@@ -315,7 +315,7 @@ export function getComponentsArr(
                 value.tdir = tdir;
                 value.key = key;
                 value.component = com[key];
-                value.getRaw = comRaw[key];
+                value.getRaw = getRawValue(comRaw, key);
                 arr.push(value);
             }
         }
@@ -324,4 +324,14 @@ export function getComponentsArr(
         props,
         components: arr,
     };
+}
+
+export function getRawValue(comRaw: Globs, key: string) {
+    if (typeof comRaw == 'function') {
+        return comRaw;
+    } else if (comRaw) {
+        return comRaw[key] || comRaw;
+    } else {
+        return comRaw;
+    }
 }
