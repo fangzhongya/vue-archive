@@ -1,7 +1,7 @@
 {
     "name": "@fangzhongya/vue-archive",
     "private": false,
-    "version": "0.0.2-30",
+    "version": "0.0.2-32",
     "type": "module",
     "description ": "vue 组件注释生成文档",
     "author": "fangzhongya ",
@@ -31,8 +31,8 @@
         "test": "vitest test"
     },
     "devDependencies": {
-        "@fangzhongya/create": "0.2.3-6",
-        "@fangzhongya/utils": "0.0.7-17",
+        "@fangzhongya/create": "0.2.3-8",
+        "@fangzhongya/utils": "0.0.7-18",
         "@fangzhongya/vue-components": "0.1.3-8",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@types/node": "^18.14.0",
