@@ -330,8 +330,8 @@ export function getRawValue(comRaw: Globs, key: string) {
     if (typeof comRaw == 'function') {
         return comRaw;
     } else if (comRaw) {
-        return comRaw[key] || comRaw;
+        return comRaw[key];
     } else {
-        return comRaw;
+        return null;
     }
 }

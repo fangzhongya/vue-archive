@@ -22,6 +22,7 @@ import type {
     ExampleObj,
     Components,
     GetRaw,
+    Globs,
 } from '../config';
 import {
     humpToLine,
@@ -101,28 +102,27 @@ function setExampleObj(
             examplesObj[key] = examples[key];
         });
     }
-
+    const examplesRaw = obj.examplesRaw;
     const arrraw: Array<string> = [];
-    if (obj.urls) {
+    if (obj.urls && obj.urls.length > 0) {
         obj.exampless = obj.urls;
         obj.urls.forEach((key) => {
             arrraw.push(key);
-            if (obj.examplesRaw) {
-                examplesRawObj[key] = getRawValue(
-                    obj.examplesRaw,
+            if (examplesRaw) {
+                examplesRawObj[key] = getexamplesRawObj(
+                    examplesRaw,
                     key,
                 );
             }
         });
     } else {
         obj.exampless = arr;
-        const examplesRaw = obj.examplesRaw;
         if (examplesRaw) {
             Object.keys(examplesRaw).forEach((key) => {
                 arrraw.push(key);
-                if (obj.examplesRaw) {
-                    examplesRawObj[key] = getRawValue(
-                        obj.examplesRaw,
+                if (examplesRaw) {
+                    examplesRawObj[key] = getexamplesRawObj(
+                        examplesRaw,
                         key,
                     );
                 }
@@ -135,6 +135,16 @@ function setExampleObj(
     obj.examplesRaw = undefined;
 
     exampleObj[dir] = obj;
+}
+
+function getexamplesRawObj(comRaw: Globs, key: string) {
+    if (typeof comRaw == 'function') {
+        return comRaw;
+    } else if (comRaw) {
+        return comRaw[key] || comRaw;
+    } else {
+        return comRaw;
+    }
 }
 
 /**

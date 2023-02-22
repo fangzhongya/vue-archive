@@ -87,7 +87,7 @@ export function nodeInit(
     if (typeof c.setHtml === 'function') {
         setHtml = c.setHtml;
     }
-    runDev(c?.create);
+    Fang = runDev(c?.create);
     getCompoNameObj().forEach((v) => {
         mls.push(v);
         getCompoData(v);
@@ -110,7 +110,7 @@ function gettests(obj: ComponentsObj, arr: string[]) {
     asyncMergeArray(tests, (res, _reject, zv, inde) => {
         getLocalTextTests(zv)
             .then((text) => {
-                arr.push(`### 示例` + inde);
+                arr.push(`### 示例` + inde + 1);
                 const { titles } = getTestNotes(text);
                 /**
                  * 设置头部
@@ -257,7 +257,7 @@ function getlistDom(
         arr.forEach((data, index) => {
             const vs: string[] = [];
             list.forEach((item, key) => {
-                ths.push(
+                vs.push(
                     setHtml('td', {}, [
                         setValue(
                             data,
