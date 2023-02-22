@@ -1,8 +1,7 @@
 import { getTextNotes } from '../../utils/index';
 import { getLocalTextComponents } from '../../utils/glob';
-
+import { replaceAfter } from '../../utils/util';
 export { getKeyMds } from '../../utils/glob';
-import type { ObjUnk } from '../../config';
 
 import type {
     Block,
@@ -148,7 +147,8 @@ function setProps(obj: Block) {
     });
 }
 function addProps(value: SpecObjs) {
-    propss.push(value);
+    // propss.push(value);
+    propss = replaceAfter(propss, value, 'name');
 }
 
 let slots: SpecObjs[] = [];
@@ -174,7 +174,8 @@ function setSlot(obj: Block) {
     });
 }
 function addSlots(value: SpecObjs) {
-    slots.push(value);
+    // slots.push(value);
+    slots = replaceAfter(slots, value, 'name');
 }
 
 let emitss: SpecObjs[] = [];
@@ -200,7 +201,8 @@ function setEmits(obj: Block) {
     });
 }
 function addEmits(value: SpecObjs) {
-    emitss.push(value);
+    // emitss.push(value);
+    emitss = replaceAfter(emitss, value, 'name');
 }
 
 let exposes: SpecObjs[] = [];
@@ -224,7 +226,8 @@ function setExpose(obj: Block) {
     });
 }
 function addExpose(value: SpecObjs) {
-    exposes.push(value);
+    // exposes.push(value);
+    exposes = replaceAfter(exposes, value, 'name');
 }
 
 function getFilter(obj: Block, arrs?: Array<string>) {

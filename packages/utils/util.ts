@@ -17,10 +17,13 @@ import { firstUpper } from '@fangzhongya/utils/basic/string/firstUpper';
 
 import { getSuffix } from '@fangzhongya/utils/urls/getSuffix';
 
+import { replaceAfter } from '@fangzhongya/utils/basic/array/replaceAfter';
+
 export {
     mergeObject,
     getSuffix,
     toggleArray,
+    replaceAfter,
     humpToLine,
     asyncMergeArray,
     duplicateRemoval,

@@ -48,6 +48,7 @@ export interface TextObj {
 }
 
 export interface PropObj {
+    comprops: string;
     name: string;
     value: string;
     suffix: string;

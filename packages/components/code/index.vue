@@ -119,6 +119,7 @@ function getData() {
             props.value?.key,
             props.text,
             'vue',
+            props.value?.comprops,
         ).then((arr) => {
             getLocalTextArr(arr).then((v) => {
                 files.value = v.filter((o) => {

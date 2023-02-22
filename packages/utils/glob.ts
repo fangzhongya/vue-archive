@@ -153,7 +153,7 @@ function getexamplesRawObj(comRaw: Globs, key: string) {
  * @param {*} type 文件类型
  * @returns
  */
-async function getImport(text: string, type = 'vue') {
+async function getImport(text: string, type: string) {
     let jstext = '';
     if (type == 'vue') {
         const reg = new RegExp(
@@ -163,9 +163,7 @@ async function getImport(text: string, type = 'vue') {
         if (zz) {
             jstext = zz[3];
         }
-    } else if (type == 'js') {
-        jstext = text;
-    } else if (type == 'ts') {
+    } else if (type == 'js' || type == 'ts' || type == '') {
         jstext = text;
     }
     if (jstext) {
@@ -464,6 +462,7 @@ export async function getTestImportUrl(
     url: string,
     text: string,
     type: string,
+    comprops?: string,
 ): Promise<Array<PropObj>> {
     let arr = (await getImport(text, type)) || [];
     let urs = url.split('/');
@@ -475,6 +474,7 @@ export async function getTestImportUrl(
             let v = key.substring(2);
             return {
                 name: key,
+                comprops: comprops || '',
                 value: v,
                 suffix: getSuffix(key),
                 head,
@@ -501,6 +501,7 @@ export async function getTestImportUrl(
             let v = vs.join('/');
             return {
                 name: key,
+                comprops: comprops || '',
                 value: v,
                 suffix: getSuffix(key),
                 head,
@@ -684,11 +685,15 @@ async function getPropsImport(text: string, obj: PropObj) {
                 obj.key,
                 text,
                 obj.suffix,
+                obj.comprops,
             )
         ).filter((v) => {
-            return v.key.startsWith(obj.head);
+            return (
+                v.key.startsWith(obj.head) ||
+                isComprops(v.name, obj.comprops || '')
+            );
         });
-        ts += await getPropsTexts(arr);
+        ts = (await getPropsTexts(arr)) + ts;
     }
     return ts;
 }
@@ -755,6 +760,7 @@ async function getComponentsProps(
                     obj.key,
                     text,
                     obj.suffix,
+                    obj.comprops || '',
                 )
             ).filter((v) => {
                 return (
@@ -766,7 +772,7 @@ async function getComponentsProps(
                 );
             });
             let str = await getPropsTexts(arr);
-            ts += str;
+            ts = str + ts;
         }
     }
     return ts;
