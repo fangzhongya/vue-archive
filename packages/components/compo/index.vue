@@ -32,7 +32,12 @@
         >
             <Use
                 :value="props.value"
-                :param="propsobj"
+                :param="{
+                    props: vprops,
+                    slot: vslot,
+                    emits: vemits,
+                    expose: vexpose,
+                }"
             ></Use>
         </div>
     </div>
@@ -47,6 +52,7 @@ import { ref, watch, reactive } from 'vue';
 import { getKeyMds, type NotesObj } from './index';
 import type { MdObj } from '../../utils/common';
 import { getLocalTextComponents } from '../../utils/glob';
+import type { SpecObjs } from '../../utils/index';
 import type { Ref } from 'vue';
 const props = defineProps({
     value: Object,
@@ -57,10 +63,18 @@ const iss = reactive({
     md: true,
 });
 const mds: Ref<MdObj[]> = ref([]);
-const propsobj = ref({}) as Ref<NotesObj>;
+const vprops: Ref<SpecObjs[]> = ref([]);
+const vemits: Ref<SpecObjs[]> = ref([]);
+const vexpose: Ref<SpecObjs[]> = ref([]);
+const vslot: Ref<SpecObjs[]> = ref([]);
 
-function onChange(opbj: NotesObj) {
-    propsobj.value = opbj;
+function onChange(obj: NotesObj) {
+    let { propss, slots, emitss, exposes } = obj;
+
+    vprops.value = propss;
+    vslot.value = slots;
+    vemits.value = emitss;
+    vexpose.value = exposes;
 }
 
 watch(

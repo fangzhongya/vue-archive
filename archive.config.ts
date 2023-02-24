@@ -3,6 +3,7 @@ import { defineConfig } from './packages/index';
 export default defineConfig({
     router: '__document',
     redirect: true,
+    useparam: true,
     // 目前只支持相对的路径
     components: [
         {

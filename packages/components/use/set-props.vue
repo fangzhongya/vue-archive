@@ -19,6 +19,7 @@ import Retrie from './retrie/index.vue';
 import type { Spec } from '../../utils/index';
 import type { ObjUnk } from '../../config';
 import type { Ref } from 'vue';
+import { getSpecType } from './code';
 const props = defineProps({
     name: String,
     list: Array<Spec>,
@@ -49,7 +50,7 @@ const propsValue: Ref<ObjUnk> = ref({});
 const rlist: Ref<RList[]> = ref([]);
 function setVlaue() {
     propsValue.value = {};
-    const arr: RList[] = [];
+    const arrlist: RList[] = [];
     props.list?.forEach((val) => {
         let name = val.name;
         if (!name.includes('.')) {
@@ -58,50 +59,25 @@ function setVlaue() {
             name = '';
         }
         if (name) {
-            let tarr = getType(val.type);
-
-            let type = 'any';
-            if (tarr.length == 1) {
-                type = tarr[0].split('<')[0];
-            }
-
             propsValue.value[name] = (
                 val.default || ''
             ).trim();
+            const { arr, type, dataType } =
+                getSpecType(val);
 
-            let selectable = (val.selectable || '').trim();
-            if (selectable && type != 'boolean') {
-                let arr: SelectsObj[] = [];
-                selectable.split(',').forEach((v) => {
-                    if (v) {
-                        let z = v.split(':');
-                        arr.push({
-                            label: v,
-                            prop: z[0].trim(),
-                        });
-                    }
-                });
-                selects.value[name] = arr;
-                if (type == 'function') {
-                    type = 'function';
-                } else if (type == 'array') {
-                    type = 'choice';
-                } else {
-                    type = 'select';
-                }
-            }
-            let label = setLabel(name, val);
+            selects.value[name] = arr;
+            const label = setLabel(name, val);
             let obj = {
                 label: label,
                 prop: name,
                 type: type,
-                dataType: tarr,
+                dataType: dataType,
                 select: name,
             };
-            arr.push(obj);
+            arrlist.push(obj);
         }
     });
-    rlist.value = arr;
+    rlist.value = arrlist;
 }
 
 function setLabel(name: string, val: Spec) {

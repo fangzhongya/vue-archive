@@ -154,7 +154,7 @@ function gettests(
                 name: name,
             } as TestsObj),
         );
-        setVue(obj.value, n, join(configObj.dir, key));
+        setVue(obj.name, n, join(configObj.dir, key));
         setMd(obj, arr);
     }
 }
@@ -165,10 +165,62 @@ import {
 } from '../utils/props';
 import { firstUpper } from '../utils/util';
 
-import { getHmtl } from '../components/use/code';
+import {
+    getHmtl,
+    getSpecType,
+} from '../components/use/code';
 
 import type { Spec } from '../utils/index';
 import type { ObjUnk } from '../config';
+
+import { getFunctionFormat } from '../components/use/util';
+
+function getFFParam(str: string) {
+    str = str.trim();
+    if (str && str.length > 2) {
+        return str
+            .substring(1, str.length - 1)
+            .split(',')
+            .map((k) => {
+                return (k.split(':')[0] || '').trim();
+            });
+    }
+    return [];
+}
+
+function getObjValue(d: unknown) {
+    return new Function(
+        '',
+        `{
+            return ${d}
+        }`,
+    )();
+}
+
+function getDefaultValue(obj: Spec) {
+    const vo = getSpecType(obj).zdtype;
+    const d = (obj.default || '').trim();
+    if (vo == 'function') {
+        let fb = getFunctionFormat(d);
+        if (fb) {
+            return new Function(
+                ...getFFParam(fb.param),
+                fb.body,
+            );
+        }
+        return new Function('', '{}');
+    } else if (vo == 'array') {
+        return getObjValue(d || '[]');
+    } else if (vo == 'object') {
+        return getObjValue(d || '{}');
+    } else if (vo == 'number') {
+        return getObjValue(d || '1');
+    } else if (vo == 'boolean') {
+        return getObjValue(d || 'true');
+    } else {
+        return d;
+    }
+}
 
 function setVue(
     propsname: string,
@@ -184,7 +236,7 @@ function setVue(
             let arr = name.split('/');
             name = (arr[0] || '').trim();
             if (name) {
-                propsObj[name] = val.default;
+                propsObj[name] = getDefaultValue(val);
                 if (arr && arr.length > 1) {
                     es.push({
                         name: 'update:' + name,

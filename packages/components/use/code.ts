@@ -11,6 +11,8 @@ import {
     getFunBody,
 } from './util';
 
+import type { Spec } from '../../utils/index';
+
 export function getHmtl(
     propsname: string,
     value: ObjUnk,
@@ -144,23 +146,33 @@ function getFunctionBody(
 ) {
     const text = propsText ? propsText[key] : '';
     if (text) {
-        return 'function' + text;
+        return 'function ' + text;
     } else {
-        const st = getFunctionFormat(
-            prettierFormat(v.toString()),
-        );
-        if (st) {
-            let body = `{
-${vueFormat(getFunBody(st.body), '   ')}
-}`;
-            return `function${st.param}${body}`;
-        } else {
-            return 'undefined';
-        }
+        return funstr(v.toString());
     }
 }
 
-function setValStringify(
+function funstr(v: string) {
+    const st = getFunctionFormat(prettierFormat(v));
+    if (st) {
+        let body = `{
+${vueFormat(getFunBody(st.body), '   ')}
+}`;
+        return `function ${st.param} ${body}`;
+    } else {
+        return 'undefined';
+    }
+}
+
+function getChange(str: string) {
+    const tr = str.trim();
+    if (/^\(/.test(tr)) {
+        return funstr(tr);
+    } else {
+        return JSON.stringify(str);
+    }
+}
+export function setValStringify(
     v: unknown,
     key: string,
     propsText?: ObjStr,
@@ -169,6 +181,62 @@ function setValStringify(
     if (text) {
         return text;
     } else {
-        return JSON.stringify(v);
+        if (typeof v == 'string') {
+            return getChange(v + '');
+        } else {
+            return JSON.stringify(v);
+        }
     }
+}
+
+type SelectsObj = {
+    label: string;
+    prop: unknown;
+};
+
+export function getSpecType(val: Spec) {
+    let tarr = getType(val.type);
+    let type = 'any';
+    if (tarr.length == 1) {
+        type = tarr[0].split('<')[0];
+    }
+    const zdtype = type;
+    let selectable = (val.selectable || '').trim();
+    let arr: SelectsObj[] = [];
+    if (selectable && type != 'boolean') {
+        selectable.split(',').forEach((v) => {
+            if (v) {
+                let z = v.split(':');
+                arr.push({
+                    label: v,
+                    prop: z[0].trim(),
+                });
+            }
+        });
+        if (type == 'function') {
+            type = 'function';
+        } else if (type == 'array') {
+            type = 'choice';
+        } else {
+            type = 'select';
+        }
+    }
+    return {
+        arr,
+        zdtype,
+        type: type,
+        dataType: tarr,
+    };
+}
+
+function getType(value: string) {
+    let arr: string[] = [];
+    let str = (value || '').trim().toLowerCase();
+    str.split(',').forEach((v) => {
+        v = v.trim();
+        if (v) {
+            arr.push(v);
+        }
+    });
+    return [...new Set(arr)].sort();
 }
