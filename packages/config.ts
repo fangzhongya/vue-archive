@@ -76,6 +76,7 @@ export interface ExampleObj {
 export interface Config {
     router?: string;
     redirect?: boolean;
+    useparam?: boolean;
     // 目前只支持相对的路径
     components: Array<Components>;
     example?: ExampleObj;
@@ -86,8 +87,6 @@ const config: Config = {
 export function userConfig(defaultConfig: Config): Config {
     return mergeObject(config, defaultConfig, 2);
 }
-export function getConfig(
-    key: 'router' | 'redirect' | 'components' | 'example',
-) {
+export function getConfig(key: keyof Config) {
     return config[key];
 }

@@ -36,6 +36,7 @@ export function isUrlsMatchistarts(
 }
 
 export interface TextObj {
+    name: string;
     // 组件文件名称
     value: string;
     suffix: string;

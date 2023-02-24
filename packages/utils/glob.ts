@@ -519,6 +519,7 @@ export function getLocalTextArr(
             let arrs: Array<TextObj> = arr.map((o) => {
                 return {
                     raw: '',
+                    name: o.name,
                     value: o.value,
                     suffix: getSuffix(o.key),
                     key: o.key,
@@ -649,6 +650,11 @@ export function getCompoNameObj(): ComponentsObj[] {
     return Object.values(componentsObj);
 }
 
+export function getComponentPropsObjs() {
+    getCompoNameObj();
+    return componentPropsObj;
+}
+
 export function getCompoName(
     url: string,
     mfcx?: boolean,
@@ -698,7 +704,7 @@ async function getPropsImport(text: string, obj: PropObj) {
     return ts;
 }
 
-function getPropsRaws(
+export function getPropsRaws(
     arr: Array<PropObj>,
 ): Promise<PropsObj[]> {
     return new Promise((resolve) => {
@@ -791,16 +797,16 @@ export function getLocalTextComponents(
                 } else if (componentObj.getRaw) {
                     componentObj
                         .getRaw(componentObj)
-                        .then(async (s) => {
+                        .then((s) => {
                             const m = (s || '') + '';
-                            const text =
-                                await getComponentsProps(
-                                    m,
-                                    componentObj,
-                                );
-                            componentObj.raw = text;
-                            componentObj.getRaw = null;
-                            resolve(text);
+                            getComponentsProps(
+                                m,
+                                componentObj,
+                            ).then((text) => {
+                                componentObj.raw = text;
+                                componentObj.getRaw = null;
+                                resolve(text);
+                            });
                         });
                 } else {
                     resolve('');

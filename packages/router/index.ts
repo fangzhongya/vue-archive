@@ -55,6 +55,13 @@ const routes: RouteRecordRaw[] = [
                     import('../page/single/index.vue'),
                 meta: { title: '单例开发' },
             },
+            {
+                path: 'comprops',
+                name: '__documentComprops',
+                component: () =>
+                    import('../page/comprops/index.vue'),
+                meta: { title: '公共参数' },
+            },
         ],
     },
 ];
@@ -75,7 +82,6 @@ function keydown(e: KeyboardEvent) {
 
 export function init(router: Router) {
     let path = '/' + getConfig('router') || '__document';
-    console.log('path', path);
     routes[0].path = path;
     routes[0].children?.unshift({
         path: path + '/:chapters+',

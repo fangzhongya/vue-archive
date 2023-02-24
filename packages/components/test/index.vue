@@ -93,11 +93,9 @@ function getData() {
                 .then((text) => {
                     codetext.value = text;
                     let { titles, states } = getNotes(text);
-                    console.log('states', states);
                     title.value = titles;
                     const so = states[0];
                     if (so && so.type) {
-                        console.log('so', so);
                         state.value = so.type.type;
                     }
                     emit(

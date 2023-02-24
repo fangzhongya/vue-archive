@@ -14,7 +14,8 @@ interface ArrFi {
     key: string;
     value: Specs;
 }
-type NotesObj = {
+
+export type NotesObj = {
     titles: SpecObjs[];
     propss: SpecObjs[];
     slots: SpecObjs[];
@@ -345,6 +346,11 @@ export function getNotes(key: string): Promise<NotesObj> {
             resolve(notesFilter(notes));
         });
     });
+}
+
+export function getNotesText(text: string): NotesObj {
+    let notes = getTextNotes(text);
+    return notesFilter(notes);
 }
 
 export type FTableFormatter = (

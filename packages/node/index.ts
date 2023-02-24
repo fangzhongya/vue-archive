@@ -77,9 +77,9 @@ interface NodeConfig extends Config {
     [key: string]: any;
 }
 
-const mls: ComponentsObj[] = [];
+let comps: ComponentsObj[] = [];
 
-export function nodeInit(
+export async function nodeInit(
     c: NodeConfig,
     callback: (mls: ComponentsObj[]) => void,
 ) {
@@ -89,17 +89,11 @@ export function nodeInit(
         setHtml = c.setHtml;
     }
     Fang = runDev(c?.create);
-    getCompoNameObj().forEach((v) => {
-        mls.push(v);
-        getCompoData(v);
-    });
-}
-
-/***
- * 获取组件数据
- */
-function getCompoData(obj: ComponentsObj) {
-    getData(obj);
+    comps = getCompoNameObj();
+    for (let index = 0; index < comps.length; index++) {
+        const element = comps[index];
+        await getCompoData(element);
+    }
 }
 
 /**
@@ -142,9 +136,9 @@ function setMd(obj: ComponentsObj, arr: string[]) {
     );
     Fang.fileOpen(sc, arr.join('\n\n'));
 
-    if (mls.length == lss) {
+    if (comps.length == lss) {
         if (configObj._callback_) {
-            configObj._callback_(mls);
+            configObj._callback_(comps);
         }
     }
 }
@@ -176,15 +170,16 @@ function setDom(dom: string) {
 }
 
 /**
- * 设置组件的页面md
+ * 获取组件数据 设置组件的页面md
  * @param obj
  */
-function getData(value: ComponentsObj) {
+async function getCompoData(value: ComponentsObj) {
     const arr: string[] = [];
     arr.push('# ' + value.name);
-    getNotes(value.key).then((obj) => {
+    await getNotes(value.key).then((obj) => {
         let { titles, propss, slots, emitss, exposes } =
             obj;
+
         /**
          * 设置头部
          */
@@ -195,6 +190,7 @@ function getData(value: ComponentsObj) {
             },
             getTopDom(titles, setHtml),
         );
+
         arr.push(...setDom(dom));
 
         /**
@@ -203,9 +199,10 @@ function getData(value: ComponentsObj) {
         const list = [
             ...getlistDom(propss, '组件属性', tprops),
             ...getlistDom(emitss, '组件事件', temits),
-            ...getlistDom(emitss, '组件方法', texpose),
+            ...getlistDom(exposes, '组件方法', texpose),
             ...getlistDom(slots, '组件插槽', tslot),
         ];
+
         arr.push(...list);
 
         arr.push(`## 说明文档`);
