@@ -220,7 +220,7 @@ export function getLocalTextTests(
  * 2 : 二级 aliass 目录
  * 3 : dir 名称开始 加上二级 aliass 目录
  */
-function getLevelUrl(
+export function getLevelUrl(
     key: string | number,
     obj: ComponentsObj,
 ) {

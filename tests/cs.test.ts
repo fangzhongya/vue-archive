@@ -67,9 +67,7 @@ function setCss(
         yss: string,
     ) => string,
 ): string {
-    console.log('1', text);
     text = text.replace(/ /g, '  ');
-    console.log('2', text);
     const reg = new RegExp(
         `\\s*(\\.|-|:|\\s|\\n|\\r|\\()([0-9\\.]+)(${str})(\\n|\\r|\\s|;|\\)|\\})`,
         'g',

@@ -53,8 +53,17 @@
     </tr>
   </thead>
   <tbody>
-    <tr class="compo-talbe-zw">
-      <td colspan="5">暂无</td>
+    <tr class="compo-talbe-li">
+      <td>setValue</td>
+      <td>设置值</td>
+      <td>val:&lt;string&gt;设置的数据</td>
+      <td></td>
+    </tr>
+    <tr class="compo-talbe-li">
+      <td>getValue</td>
+      <td>获取当前值</td>
+      <td></td>
+      <td>string : 当前的值</td>
     </tr>
   </tbody>
 </table>

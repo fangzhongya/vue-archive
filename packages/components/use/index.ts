@@ -18,9 +18,10 @@ import {
 } from '../../utils/props';
 import { firstUpper } from '../../utils/util';
 import type { ComponentPublicInstance } from 'vue';
-import type { SpecObjs, Spec } from '../../utils/index';
+import type { Spec } from '../../utils/index';
 import type { ObjUnk, ObjStr } from '../../config';
 import type { ComponentsObj } from '../../utils/common';
+import type { NotesObj } from '../compo/index';
 
 /**
  * @title
@@ -45,7 +46,7 @@ export default defineComponent({
         a: any,
         props: {
             value: ComponentsObj;
-            param: { [key: string]: SpecObjs[] };
+            param: NotesObj;
         },
         b: any,
         data: {
@@ -66,10 +67,10 @@ export default defineComponent({
             dom = resolveComponent(value.name);
         }
         const param = props.param;
-        const ps = getPropsValue(param.props);
-        const es = getEmitsValue(param.emits);
-        const res = getExposeValue(param.expose);
-        const ss = getSlotValue(param.slot);
+        const ps = getPropsValue(param.propss);
+        const es = getEmitsValue(param.emitss);
+        const res = getExposeValue(param.exposes);
+        const ss = getSlotValue(param.slots);
         const propsObj = {} as ObjUnk;
         const slotObj = {} as ObjUnk;
         ps.forEach((val) => {

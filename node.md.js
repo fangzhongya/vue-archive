@@ -25,7 +25,7 @@ const exampleurls = ess.map((k) => {
 function componentsRaw(obj) {
     return new Promise((resolve) => {
         const text = readFileSync(obj.key);
-        resolve(text);
+        resolve(text.toString());
     });
 }
 
@@ -41,6 +41,10 @@ const dir = resolve(process.cwd(), '').replace(/\\/g, '/');
 const c = {
     router: '__document',
     redirect: true,
+    create: {
+        fileCover: true,
+        // fileTongre: true,
+    },
     // 目前只支持相对的路径
     outDir: './cs/components/',
     dir: dir,

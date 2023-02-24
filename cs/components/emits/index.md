@@ -55,11 +55,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr class="compo-talbe-li">
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+    <tr class="compo-talbe-zw">
+      <td colspan="5">暂无</td>
     </tr>
   </tbody>
 </table>

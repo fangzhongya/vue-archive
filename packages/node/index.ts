@@ -30,7 +30,10 @@ import {
     texpose,
     tslot,
 } from '../components/compo/index';
-import type { FTableList } from '../components/compo/index';
+import type {
+    FTableList,
+    NotesObj,
+} from '../components/compo/index';
 
 import {
     type FangMd,
@@ -95,37 +98,123 @@ export async function nodeInit(
         await getCompoData(element);
     }
 }
+import { getLevelUrl } from '../utils/glob';
 
 /**
  * 获取示例数据
  * @param obj
  */
-function gettests(obj: ComponentsObj, arr: string[]) {
+function gettests(
+    obj: ComponentsObj,
+    arr: string[],
+    n: NotesObj,
+) {
     const tests = getTestName(obj.key);
-    asyncMergeArray(tests, (res, _reject, zv, inde) => {
-        getLocalTextTests(zv)
-            .then((text) => {
-                arr.push(`### 示例` + inde + 1);
-                const { titles } = getTestNotes(text);
-                /**
-                 * 设置头部
-                 */
-                const dom = setHtml(
-                    'div',
-                    {
-                        class: 'compo-top',
-                    },
-                    getTopDom(titles, setHtml),
-                );
-                arr.push(...setDom(dom));
-                arr.push(...setTestUrl(obj, zv));
-                res();
-            })
-            .catch(() => {});
-    }).then(() => {
+    if (tests && tests.length > 0) {
+        asyncMergeArray(tests, (res, _reject, zv, inde) => {
+            getLocalTextTests(zv)
+                .then((text) => {
+                    arr.push(`### 示例` + inde + 1);
+                    const { titles } = getTestNotes(text);
+                    /**
+                     * 设置头部
+                     */
+                    const dom = setHtml(
+                        'div',
+                        {
+                            class: 'compo-top',
+                        },
+                        getTopDom(titles, setHtml),
+                    );
+                    arr.push(...setDom(dom));
+                    arr.push(...setTestUrl(obj, zv));
+                    res();
+                })
+                .catch(() => {});
+        }).then(() => {
+            setMd(obj, arr);
+        });
+    } else {
+        const name = 'cs';
+        let key =
+            configObj.example.dir +
+            '/' +
+            getLevelUrl(configObj.example.level, obj) +
+            '/' +
+            obj.value +
+            '/' +
+            name +
+            '/index.vue';
+        key = key
+            .replace(/\/\//g, '/')
+            .replace(/\/\//g, '/');
+        arr.push(
+            ...setTestUrl(obj, {
+                key: key,
+                name: name,
+            } as TestsObj),
+        );
+        setVue(obj.value, n, join(configObj.dir, key));
         setMd(obj, arr);
-    });
+    }
 }
+
+import {
+    getPropsValue,
+    getEmitsValue,
+} from '../utils/props';
+import { firstUpper } from '../utils/util';
+
+import { getHmtl } from '../components/use/code';
+
+import type { Spec } from '../utils/index';
+import type { ObjUnk } from '../config';
+
+function setVue(
+    propsname: string,
+    param: NotesObj,
+    url: string,
+) {
+    const ps = getPropsValue(param.propss);
+    const es = getEmitsValue(param.emitss);
+    const propsObj = {} as ObjUnk;
+    ps.forEach((val) => {
+        let name = val.name;
+        if (!name.includes('.')) {
+            let arr = name.split('/');
+            name = (arr[0] || '').trim();
+            if (name) {
+                propsObj[name] = val.default;
+                if (arr && arr.length > 1) {
+                    es.push({
+                        name: 'update:' + name,
+                        description: val.description,
+                        selectable:
+                            'value:[' + val.type + ']',
+                    } as Spec);
+                }
+            }
+        }
+    });
+    es.forEach((val) => {
+        let knam = val.name;
+        if (knam.includes('-')) {
+            let arr = knam.split('-');
+            arr = arr.map((vs, i) => {
+                return firstUpper(vs);
+            });
+            knam = arr.join('');
+        } else {
+            knam = firstUpper(knam);
+        }
+        const name = 'on' + knam;
+        propsObj[name] = (...arr: unknown[]) => {};
+    });
+    const html = getHmtl(propsname, propsObj);
+
+    Fang.fileOpen(url, html);
+}
+
 let lss = 0;
 function setMd(obj: ComponentsObj, arr: string[]) {
     lss++;
@@ -152,7 +241,7 @@ function setTestUrl(obj: ComponentsObj, test: TestsObj) {
         '/' + obj.value + '/index.md',
     );
     const url = getImportUrl(sc, tu);
-    arr.push(`:::preview ${'test.name'}`);
+    arr.push(`:::preview ${test.name}`);
     arr.push(`demo-preview=${url}`);
     arr.push(`:::`);
     //     :::preview 标题说明 || 使用说明
@@ -218,7 +307,7 @@ async function getCompoData(value: ComponentsObj) {
                 .catch(() => {});
         }).then(() => {
             arr.push(`## 示例`);
-            gettests(value, arr);
+            gettests(value, arr, obj);
         });
     });
 }
