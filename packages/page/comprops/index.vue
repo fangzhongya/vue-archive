@@ -66,8 +66,8 @@ const lis = Object.values(getComponentPropsObjs()).filter(
 );
 
 function getName(obj: PropsObj) {
-    const reg = new RegExp(obj.comprops + '(.)$');
-    const rs = reg.exec(obj.value);
+    const reg = new RegExp(obj.comprops + '(.+)$');
+    const rs = reg.exec('/' + obj.value);
     if (rs) {
         return rs[1];
     }

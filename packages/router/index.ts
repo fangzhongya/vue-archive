@@ -1,5 +1,6 @@
 import { getConfig } from '../config';
 import { setSession, getSession } from '../utils/storage';
+import { firstUpper } from '@fangzhongya/utils/basic/string/firstUpper';
 import type {
     Router,
     RouteRecordRaw,
@@ -12,6 +13,8 @@ import type {
     ComponentsObj,
 } from '../utils/common';
 import { ObjUnk } from '../config';
+import { getFileName } from './file';
+
 const routes: RouteRecordRaw[] = [
     {
         path: '/__document',
@@ -19,50 +22,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../index/index.vue'),
         redirect: { name: '__documentIndex' },
         meta: { title: '文档' },
-        children: [
-            {
-                path: 'index',
-                name: '__documentIndex',
-                component: () =>
-                    import('../page/index/index.vue'),
-                meta: { title: '首页' },
-            },
-            {
-                path: 'compon',
-                name: '__documentCompon',
-                component: () =>
-                    import('../page/compon/index.vue'),
-                meta: { title: '组件' },
-            },
-            {
-                path: 'tests',
-                name: '__documentTests',
-                component: () =>
-                    import('../page/tests/index.vue'),
-                meta: { title: '示例' },
-            },
-            {
-                path: 'develop',
-                name: '__documentDevelop',
-                component: () =>
-                    import('../page/develop/index.vue'),
-                meta: { title: '开发' },
-            },
-            {
-                path: 'single',
-                name: '__documentSingle',
-                component: () =>
-                    import('../page/single/index.vue'),
-                meta: { title: '单例开发' },
-            },
-            {
-                path: 'comprops',
-                name: '__documentComprops',
-                component: () =>
-                    import('../page/comprops/index.vue'),
-                meta: { title: '公共参数' },
-            },
-        ],
+        children: [],
     },
 ];
 
@@ -80,12 +40,24 @@ function keydown(e: KeyboardEvent) {
     }
 }
 
+let prefix = '__document';
+
 export function init(router: Router) {
-    let path = '/' + getConfig('router') || '__document';
+    prefix =
+        (getConfig('router') as string) || '__document';
+    let path = '/' + prefix;
     routes[0].path = path;
+    routes[0].redirect = { name: prefix + 'Index' };
     routes[0].children?.unshift({
         path: path + '/:chapters+',
-        redirect: { name: '__documentIndex' },
+        redirect: { name: prefix + 'Index' },
+    });
+    getFileName().forEach((obj) => {
+        routes[0].children?.push({
+            path: obj.value,
+            name: prefix + obj.name,
+            component: obj.component,
+        });
     });
     const redirect = getConfig('redirect');
     routes.forEach((obj) => {
@@ -169,9 +141,28 @@ export function toPage(
     toPageParam[path] = params;
     setSession('router.toPage.' + path, params);
 }
+
+export function tos(
+    router: Router,
+    obj: ComponentsObj,
+    name?: string,
+) {
+    let m = '';
+    if (name) {
+        m = firstUpper(name);
+    }
+    toPage(router, {
+        name: prefix + m,
+        query: {
+            id: obj.value,
+        },
+        params: { key: obj.key },
+    });
+}
+
 export function toSingle(router: Router, obj: TestsObj) {
     toPage(router, {
-        name: '__documentSingle',
+        name: prefix + 'Single',
         query: {
             id: obj.name + '/' + obj.value,
         },
@@ -184,7 +175,7 @@ export function toDevelop(
     obj: ComponentsObj,
 ) {
     toPage(router, {
-        name: '__documentDevelop',
+        name: prefix + 'Develop',
         query: {
             id: obj.value,
         },
@@ -197,7 +188,7 @@ export function toTests(
     obj: ComponentsObj,
 ) {
     toPage(router, {
-        name: '__documentTests',
+        name: prefix + 'Tests',
         query: {
             id: obj.value,
         },
@@ -210,7 +201,7 @@ export function toCompon(
     obj: ComponentsObj,
 ) {
     toPage(router, {
-        name: '__documentCompon',
+        name: prefix + 'Compon',
         query: {
             id: obj.value,
         },
@@ -220,7 +211,7 @@ export function toCompon(
 
 export function toIndex(router: Router, id: string) {
     router.push({
-        name: '__document',
+        name: prefix,
         query: {
             id: id,
         },

@@ -1,13 +1,22 @@
 import { defineComponent, h } from 'vue';
 import type { SpecObjs } from '../../utils/index';
-
+import { htmlEscape } from '@fangzhongya/utils/html/htmlEscape';
 export function getTestTopDom<
     T extends (...arrs: any[]) => any,
     E = ReturnType<T>,
->(props: SpecObjs[], h: T): E[] {
+>(props: SpecObjs[], h: T, isZy?: boolean): E[] {
     let doms: E[] = [];
     let domss: E[] = [];
     let list: E[] = [];
+
+    const getValue = (v: string) => {
+        if (isZy) {
+            return htmlEscape(v);
+        } else {
+            return v;
+        }
+    };
+
     const setTitle = () => {
         if (list.length > 0) {
             doms.push(
@@ -50,13 +59,13 @@ export function getTestTopDom<
                     },
                     [
                         h('span', {}, '更新时间：'),
-                        h(
-                            'span',
-                            {},
-                            obj.date.name +
-                                ' ' +
-                                obj.date.description,
-                        ),
+                        h('span', {}, [
+                            getValue(
+                                obj.date.name +
+                                    ' ' +
+                                    obj.date.description,
+                            ),
+                        ]),
                     ],
                 ),
             );
@@ -71,13 +80,13 @@ export function getTestTopDom<
                     },
                     [
                         h('span', {}, '作者：'),
-                        h(
-                            'span',
-                            {},
-                            obj.author.name +
-                                ' ' +
-                                obj.author.description,
-                        ),
+                        h('span', {}, [
+                            getValue(
+                                obj.author.name +
+                                    ' ' +
+                                    obj.author.description,
+                            ),
+                        ]),
                     ],
                 ),
             );
@@ -100,13 +109,13 @@ export function getTestTopDom<
                         class: 'test-top-title',
                     },
                     [
-                        h(
-                            'span',
-                            {},
-                            obj.title.name +
-                                ' ' +
-                                obj.title.description,
-                        ),
+                        h('span', {}, [
+                            getValue(
+                                obj.title.name +
+                                    ' ' +
+                                    obj.title.description,
+                            ),
+                        ]),
                     ],
                 ),
             );
@@ -136,13 +145,13 @@ export function getTestTopDom<
                         class: 'test-top-text',
                     },
                     [
-                        h(
-                            'span',
-                            {},
-                            obj.text.name +
-                                ' ' +
-                                obj.text.description,
-                        ),
+                        h('span', {}, [
+                            getValue(
+                                obj.text.name +
+                                    ' ' +
+                                    obj.text.description,
+                            ),
+                        ]),
                     ],
                 ),
             );
@@ -157,13 +166,14 @@ export function getTestTopDom<
                         class: 'test-top-proposal',
                     },
                     [
-                        h(
-                            'span',
-                            {},
-                            obj.proposal.name +
-                                ' ' +
-                                obj.proposal.description,
-                        ),
+                        h('span', {}, [
+                            getValue(
+                                obj.proposal.name +
+                                    ' ' +
+                                    obj.proposal
+                                        .description,
+                            ),
+                        ]),
                     ],
                 ),
             );
@@ -177,13 +187,13 @@ export function getTestTopDom<
                         class: 'test-top-error',
                     },
                     [
-                        h(
-                            'span',
-                            {},
-                            obj.error.name +
-                                ' ' +
-                                obj.error.description,
-                        ),
+                        h('span', {}, [
+                            getValue(
+                                obj.error.name +
+                                    ' ' +
+                                    obj.error.description,
+                            ),
+                        ]),
                     ],
                 ),
             );

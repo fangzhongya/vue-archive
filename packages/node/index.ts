@@ -12,6 +12,7 @@ import { getNotes as getTestNotes } from '../components/test/index';
 import { asyncMergeArray } from '../utils/util';
 import { isArray } from '@fangzhongya/utils/basic/array/isArray';
 import { getImportUrl } from '@fangzhongya/utils/urls/getImportUrl';
+import { lineToLargeHump } from '@fangzhongya/utils/name/lineToLargeHump';
 import {
     getCompoNameObj,
     getTestName,
@@ -39,7 +40,7 @@ import {
     type FangMd,
     runDev,
 } from '@fangzhongya/create/bins/md';
-
+import { htmlEscape } from '@fangzhongya/utils/html/htmlEscape';
 let Fang: FangMd;
 
 /**
@@ -100,6 +101,14 @@ export async function nodeInit(
 }
 import { getLevelUrl } from '../utils/glob';
 
+function getName(obj: ComponentsObj) {
+    let name = obj.value;
+    if (configObj.usealias) {
+        name = obj.alias + '-' + name;
+    }
+    return lineToLargeHump(name);
+}
+
 /**
  * 获取示例数据
  * @param obj
@@ -124,7 +133,11 @@ function gettests(
                         {
                             class: 'compo-top',
                         },
-                        getTopDom(titles, setHtml),
+                        getTestTopDom(
+                            titles,
+                            setHtml,
+                            true,
+                        ),
                     );
                     arr.push(...setDom(dom));
                     arr.push(...setTestUrl(obj, zv));
@@ -154,7 +167,7 @@ function gettests(
                 name: name,
             } as TestsObj),
         );
-        setVue(obj.name, n, join(configObj.dir, key));
+        setVue(getName(obj), n, join(configObj.dir, key));
         setMd(obj, arr);
     }
 }
@@ -310,13 +323,15 @@ function setDom(dom: string) {
     return arr;
 }
 
+import { getTestTopDom } from '../components/test/top';
+
 /**
  * 获取组件数据 设置组件的页面md
  * @param obj
  */
 async function getCompoData(value: ComponentsObj) {
     const arr: string[] = [];
-    arr.push('# ' + value.name);
+    arr.push('# ' + getName(value));
     await getNotes(value.key).then((obj) => {
         let { titles, propss, slots, emitss, exposes } =
             obj;
@@ -329,7 +344,7 @@ async function getCompoData(value: ComponentsObj) {
             {
                 class: 'compo-top',
             },
-            getTopDom(titles, setHtml),
+            getTopDom(titles, setHtml, true),
         );
 
         arr.push(...setDom(dom));
@@ -379,7 +394,7 @@ function setValue(
         v = '';
     }
     v = v.toString();
-    return v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return htmlEscape(v);
 }
 
 function getlistDom(
@@ -391,8 +406,7 @@ function getlistDom(
     const ths: string[] = [];
     list.forEach((item) => {
         let v = item?.label || '';
-        v = v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        ths.push(setHtml('th', {}, [v]));
+        ths.push(setHtml('th', {}, [htmlEscape(v)]));
     });
 
     let trli: string[];
