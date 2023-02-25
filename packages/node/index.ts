@@ -306,12 +306,14 @@ function setTestUrl(obj: ComponentsObj, test: TestsObj) {
         '/' + obj.value + '/index.md',
     );
     const url = getImportUrl(sc, tu);
-    arr.push(`:::preview ${test.name}`);
-    arr.push(`demo-preview=${url}`);
-    arr.push(`:::`);
-    //     :::preview 标题说明 || 使用说明
-    // demo-preview=../examples/components/cs-title/cs/index.vue
-    // :::
+
+    if (configObj.setTest) {
+        arr.push(...configObj.setTest(url, test, obj));
+    } else {
+        arr.push(`:::preview ${test.name} || `);
+        arr.push(`demo-preview=${url}`);
+        arr.push(`:::`);
+    }
     return arr;
 }
 

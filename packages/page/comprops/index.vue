@@ -31,6 +31,17 @@
                     <Header></Header>
                 </div>
                 <div class="index-main">
+                    <div class="index-main-top">
+                        <Boxurl :value="choice">
+                            <div class="aside-li-name">
+                                <div
+                                    class="aside-li-name-name"
+                                >
+                                    {{ getName(choice) }}
+                                </div>
+                            </div>
+                        </Boxurl>
+                    </div>
                     <div class="index-main-div">
                         <Props :value="text"></Props>
                     </div>

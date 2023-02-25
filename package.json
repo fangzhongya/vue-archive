@@ -1,7 +1,7 @@
 {
     "name": "@fangzhongya/vue-archive",
     "private": false,
-    "version": "0.0.3-20",
+    "version": "0.0.3-21",
     "type": "module",
     "description ": "vue 组件注释生成文档",
     "author": "fangzhongya ",
